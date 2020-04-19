@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <form style="width: 200px; display: flex; flex-direction:column;" action="/enviar/" method="post">
+    {% csrf_token %}
+    <input style="margin-top:20px" type="text" placeholder="Ingresar Donante" name="donante" id="donante">
+    <input style="margin-top:20px" type="file" name="imagen" id="imagen">
+    <select name="articulo" id="articulo">
+      {% for articulo in articulos %}
+        <option for="articulo" value="{{articulo.id}}">{{articulo.nombre}}</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="cantidad" id="cantidad" placeholder="Cantidad">
+    <input style="margin-top:20px" type="submit" value="Guardar donación">
+  </form>
+</body>
+</html>
