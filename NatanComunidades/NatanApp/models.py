@@ -3,13 +3,15 @@ from django.utils import timezone
 
 # Create your models here.
 class Medida(models.Model):
-  simbolo = models.CharField(max_length=45)
+  simbolo = models.CharField(max_length=45, unique=True)
+  print('Se creó un medida')
   def __str__(self):
     return self.simbolo
 
 class Articulo(models.Model):
   medida = models.ForeignKey(Medida, on_delete=models.PROTECT)
-  nombre = models.CharField(max_length=45)
+  nombre = models.CharField(max_length=45, unique=True)
+  print('Se creó un articulo')
   def __str__(self):
     return self.nombre
 
