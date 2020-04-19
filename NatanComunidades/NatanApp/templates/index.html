@@ -6,7 +6,7 @@
   <title>Document</title>
 </head>
 <body>
-  <form style="width: 200px; display: flex; flex-direction:column;" action="/enviar/" method="post">
+  <form style="width: 200px; display: flex; flex-direction:column;" action="/cargar/" method="post">
     {% csrf_token %}
     <input style="margin-top:20px" type="text" placeholder="Ingresar Donante" name="donante" id="donante">
     <input style="margin-top:20px" type="file" name="imagen" id="imagen">
