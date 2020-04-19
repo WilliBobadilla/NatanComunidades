@@ -4,19 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    #miTabla {
+      border: 1px black solid;
+    }
+  </style>
 </head>
 <body>
   <form style="width: 200px; display: flex; flex-direction:column;" action="/cargar/" method="post">
     {% csrf_token %}
     <input style="margin-top:20px" type="text" placeholder="Ingresar Donante" name="donante" id="donante">
     <input style="margin-top:20px" type="file" name="imagen" id="imagen">
+    <br>
+    <div>
+      <table id="miTabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Azucar</td>
+            <td>5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <select name="articulo" id="articulo">
       {% for articulo in articulos %}
         <option for="articulo" value="{{articulo.id}}">{{articulo.nombre}}</option>
       {% endfor %}
     </select>
     <input type="number" name="cantidad" id="cantidad" placeholder="Cantidad">
+    <span id="agregarArticulo" onclick="agregarArticulo()">+</span>
+    <br>
     <input style="margin-top:20px" type="submit" value="Guardar donación">
   </form>
+  <script>
+    var lista = []
+    function agregarArticulo(){
+      var table = document.getElementById('miTabla')
+      var articulo = document.getElementById('articulo').value
+      var nombreArticulo = document.getElementById('articulo').children[articulo-1].innerHTML
+      console.log(1)
+      //Agrega al final
+      var row = table.insertRow()
+      row.insertCell(0).innerHTML = nombreArticulo
+      row.insertCell(1).innerHTML = document.getElementById('cantidad').value
+      document.getElementById('cantidad').value = null
+    }
+  </script>
 </body>
 </html>
