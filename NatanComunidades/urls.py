@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home),
     path('cargar/', cargar),
-    path('cargardb/', cargardb)
+    path('cargardb/', cargardb),
+    path('api/', api),
 ]

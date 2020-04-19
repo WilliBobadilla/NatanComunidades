@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from NatanComunidades.NatanApp.models import *
+from django.http import JsonResponse
+import json
+from django.http import HttpResponse
+
 
 # Create your views here.
 
@@ -51,6 +55,11 @@ def home(request):
   #Trata de cargar de forma predeterminada 
   articulos = Articulo.objects.all()
   return render(request, 'index.html', {'articulos':articulos})
+
+def api(request):
+  articulos = Articulo.objects.all().values('nombre')
+  data = list(articulos)
+  return HttpResponse(data)
 
 
 # Pedidos
