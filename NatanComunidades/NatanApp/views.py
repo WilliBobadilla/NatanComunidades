@@ -114,7 +114,24 @@ def cargar_lista_articulos(request):
 def mapa(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
-  return render (request,'map.html')
+
+  datos_comunidades=consulta_datos()
+  lista=[ ]
+  for item in datos_comunidades:
+      if item.entregado:
+        entregado=1
+      else:
+        entregado=0
+      cada_dato={"nombre":item.nombre ,"responsable": item.responsable,
+                    "ubicacion": {"latitud": item.latitud,
+                                    "longitud": item.longitud
+                                  },
+                           "entregado":entregado
+                }
+      lista.append(cada_dato) # agregamos a la lista
+
+  data = {"geo": lista} # al final enviamos esto 
+  return render (request,'map.html',data)
   
 
 
@@ -138,3 +155,11 @@ def logout_request(request):
     logout(request)
     # Redirect to a success page.
     return HttpResponseRedirect("/")
+
+
+def consulta_datos():
+  """
+  Funcion que devuelve toda la info de las comundidades\n
+  Devuelve en formato querydict
+  """
+  return Comunidad.objects.all()

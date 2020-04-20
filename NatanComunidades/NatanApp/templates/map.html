@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {% comment %} css del leaflet {% endcomment %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
 
     <style>
-        #mapid{
+        #mapid {
             height: 400px;
             width: 600px;
         }
@@ -19,23 +20,28 @@
 
     <title>Mapa</title>
 </head>
+
 <body>
     {% csrf_token %}
 
     <div id="mapid"></div>
 
 
-    
+
 </body>
 
 {% comment %} javascript del leaflet {% endcomment %}
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-  crossorigin=""></script>
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
 
 <script>
+    {% autoescape off %}
+    datos = {{ geo }}
+    {% endautoescape %}
 
-    var mymap = L.map('mapid').setView([-25.29807590273343,-57.59930298053507], 10);
+    console.log(datos)
+    var mymap = L.map('mapid').setView([-25.29807590273343, -57.59930298053507], 10);
 
     L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Rxa6eCNYkQOw43Wn9BFH', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -47,33 +53,50 @@
         crossOrigin: true
     }).addTo(mymap);
 
-    var marker = L.marker([-25.29807590273,-57.59930298053]).addTo(mymap);
 
-    var marker2 = L.marker([-25.273720707084095,-57.49495258233195]).addTo(mymap);
-    
-    var marker3 = L.marker([-25.398229411876855,-57.54724835323643]).addTo(mymap);
+    var plano = new Array();
+    var index = 0; //para recorrer la lista
+    var lista_aux = new Array();
+    for (index = 0; index < datos.length; index++) {
+        //var ima= '<img src="' + datos[index].url + '"height=40% width=50% >';
 
-    var circle = L.circle([-25.29807590273,-57.59930298053],{
-        color: 'red',
-        fillColor:'#f03',
-        fillOpacity: 0.5,
-        radius: 3500
-    }).addTo(mymap);
+        lista_aux = ['<h2>N°:' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable + ' ' + datos[index].apellido + "</h3>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+        plano.push(lista_aux);// agregamos al array
+    }
 
-    var circle2 = L.circle([-25.273720707084095,-57.49495258233195],{
-        color: 'red',
-        fillColor:'#f03',
-        fillOpacity: 0.5,
-        radius: 3500
-    }).addTo(mymap);
 
-    var circle3 = L.circle([-25.398229411876855,-57.54724835323643],{
-        color: 'red',
-        fillColor:'#f03',
-        fillOpacity: 0.5,
-        radius: 3500
-    }).addTo(mymap);
+    for (var i = 0; i < plano.length; i++) {
+        marker = new L.marker([plano[i][1], plano[i][2]])
+            .bindPopup(plano[i][0])
+            .addTo(mymap);
+
+        if (plano[i][3]) // si es verdadero es por que se entrego
+        {
+
+
+            var circle = L.circle([plano[i][1], plano[i][2]], {
+                color: 'green',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 3500
+            }).addTo(mymap);
+        }else{
+
+            var circle = L.circle([plano[i][1], plano[i][2]], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 3500
+            }).addTo(mymap);
+        }
+
+    }
+
+
+
+
 
 
 </script>
+
 </html>

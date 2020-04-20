@@ -33,7 +33,10 @@ class Donacionxarticulo(models.Model):
 class Comunidad(models.Model):
   nombre = models.CharField(max_length=150, default='')
   responsable = models.CharField(max_length=150, default='')
-  localizacion = models.CharField(max_length=150, default='')
+  #localizacion = models.CharField(max_length=150, default='')
+  #cambio el models a integerfield para mejor manejo de las ubicaciones
+  latitud= models.FloatField(default=-45.54)
+  longitud= models.FloatField(default=-45.54)
   meta = models.IntegerField()
   disp = models.IntegerField()
   entregado = models.BooleanField()
