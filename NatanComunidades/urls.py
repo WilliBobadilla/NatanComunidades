@@ -22,9 +22,6 @@ urlpatterns = [
     path('', home),
     path('cargar/', cargar),
     path('cargardb/', cargardb),
-<<<<<<< Updated upstream
-    path('cargarlista', cargar_lista_articulos)
-=======
+    path('cargarlista', cargar_lista_articulos),
     path('mapa/', mapa),
->>>>>>> Stashed changes
 ]

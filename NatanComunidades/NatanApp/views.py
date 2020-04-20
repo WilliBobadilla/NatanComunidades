@@ -65,7 +65,6 @@ def cargar(request):
   imagen = request.POST.get('imagen')
   donacion = Donacion(donante = donante, imagen = imagen)
   donacion.save()
-<<<<<<< Updated upstream
   
   
   global lista_articulos #usado para almacenar lo que viene por ajax
@@ -100,7 +99,6 @@ def cargar_lista_articulos(request):
   return JsonResponse({"mensaje":"Agregado"})
 
   
-=======
   articuloID = request.POST.get('articulo')
   articulo = Articulo.objects.get(id=articuloID)
   cantidad = request.POST.get('cantidad')
@@ -111,4 +109,3 @@ def cargar_lista_articulos(request):
 def mapa(request):
   return render (request,'map.html')
   
->>>>>>> Stashed changes
