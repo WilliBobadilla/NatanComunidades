@@ -19,9 +19,11 @@ from NatanComunidades.NatanApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home),
+    path('', home,name="home"),
     path('cargar/', cargar),
     path('cargardb/', cargardb),
     path('cargarlista', cargar_lista_articulos),
     path('mapa/', mapa),
+    path('solicitud_login',solcitud_login),
+    path('logout',logout_request)
 ]

@@ -1,7 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponseRedirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.urls import reverse
 
+
+from django.contrib.auth.decorators import login_required # para el login
+from django.contrib.auth import authenticate, login,logout
 
 from NatanComunidades.NatanApp.models import *
 
@@ -53,7 +57,10 @@ def cargardb(request):
 ## Vistas
 
 def home(request):
+  if not request.user.is_authenticated: 
+    return render(request,"prueba_login.html")
   #Trata de cargar de forma predeterminada 
+  
   articulos = Articulo.objects.all()
   return render(request, 'index.html', {'articulos':articulos})
 
@@ -61,6 +68,8 @@ def home(request):
 # Pedidos
 
 def cargar(request):
+  if not request.user.is_authenticated:
+        return render(request,'prueba_login.html')
   donante = request.POST.get('donante')
   imagen = request.POST.get('imagen')
   donacion = Donacion(donante = donante, imagen = imagen)
@@ -88,9 +97,12 @@ def cargar_lista_articulos(request):
   Funcion utilizada para manejar la peticion Ajax del lado del cliente\n
   Esta funcion guarda en una lista global
   """
+  if not request.user.is_authenticated:
+        return render(request,'prueba_login.html')
   global lista_articulos #usado para almacenar lo que viene por ajax
   global lista_cantidades # cuidar el uso de variables globales
-
+  lista_articulos=[] # vaciamos por si es que viene una nueva solicitud reemplazando la anterior 
+  lista_cantidades1=[]
   lista_articulos=request.POST.getlist('articulos[]')
   lista_cantidades=request.POST.getlist('cantidades[]')
   print(articulos)
@@ -98,14 +110,31 @@ def cargar_lista_articulos(request):
 
   return JsonResponse({"mensaje":"Agregado"})
 
-  
-  articuloID = request.POST.get('articulo')
-  articulo = Articulo.objects.get(id=articuloID)
-  cantidad = request.POST.get('cantidad')
-  donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
-  donacionxarticulo.save()
-  return home(request)
 
 def mapa(request):
+  if not request.user.is_authenticated:
+        return render(request,'prueba_login.html')
   return render (request,'map.html')
   
+
+
+
+def solcitud_login(request):
+    """
+    Aca se manejan las solicitudes de login 
+    
+    """
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+    print("el usuario es: ", user )
+    if user is not None and user.is_active: 
+        login(request,user)
+        return HttpResponseRedirect(reverse("home"))
+    return render(request,'prueba_login.html',{'mensaje':"Credenciales invalidas  "})
+
+
+def logout_request(request):
+    logout(request)
+    # Redirect to a success page.
+    return HttpResponseRedirect("/")
