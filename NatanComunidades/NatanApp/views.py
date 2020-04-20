@@ -1,9 +1,14 @@
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
 from NatanComunidades.NatanApp.models import *
 
 # Create your views here.
 
-
+lista_articulos=[]
+lista_cantidades=[]
 #Función para cargar los datos predeterminados
 def cargardb(request):
   try:
@@ -60,9 +65,37 @@ def cargar(request):
   imagen = request.POST.get('imagen')
   donacion = Donacion(donante = donante, imagen = imagen)
   donacion.save()
-  articuloID = request.POST.get('articulo')
-  articulo = Articulo.objects.get(id=articuloID)
-  cantidad = request.POST.get('cantidad')
-  donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
-  donacionxarticulo.save()
+  
+  
+  global lista_articulos #usado para almacenar lo que viene por ajax
+  global lista_cantidades # cuidar el uso de variables globales
+  # vemos la donacion por articulo
+  for item in range(len(lista_articulos)):
+    articuloID = lista_articulos[item] 
+    articulo = Articulo.objects.get(id=articuloID)
+    cantidad= lista_cantidades[item]
+    donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
+    donacionxarticulo.save()
+  #vaciamos la varible global antes de cargar otro donante
+  lista_articulos=[]
+  lista_articulos=[]
   return home(request)
+
+
+@csrf_exempt 
+def cargar_lista_articulos(request):
+  """
+  Funcion utilizada para manejar la peticion Ajax del lado del cliente\n
+  Esta funcion guarda en una lista global
+  """
+  global lista_articulos #usado para almacenar lo que viene por ajax
+  global lista_cantidades # cuidar el uso de variables globales
+
+  lista_articulos=request.POST.getlist('articulos[]')
+  lista_cantidades=request.POST.getlist('cantidades[]')
+  print(articulos)
+  print(cantidades)
+
+  return JsonResponse({"mensaje":"Agregado"})
+
+  
