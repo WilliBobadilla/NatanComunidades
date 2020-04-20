@@ -29,3 +29,12 @@ class Donacionxarticulo(models.Model):
   cantidad = models.IntegerField()
   def __str__(self):
     return '{0}: {1} - {2}'.format(self.donacion, str(self.cantidad), self.articulo)
+
+class Comunidad(models.Model):
+  nombre = models.CharField(max_length=150, default='')
+  responsable = models.CharField(max_length=150, default='')
+  localizacion = models.CharField(max_length=150, default='')
+  meta = models.IntegerField()
+  disp = models.IntegerField()
+  entregado = models.BooleanField()
+  listo = models.BooleanField()
