@@ -1,2 +1,0 @@
-just to add folder, solo para agregar la carpeta en github,
-ya que github no agrega o detecta carpetas vacias 
