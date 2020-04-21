@@ -5,6 +5,7 @@
 var productos = ['Azúcar', 'Leche en polvo/cartón', 'Yerba', 'Panificados secos', 'Harina', 'Aceite', 'Pollo/Carne enlatada', 'Poroto', 'Arroz', 'Fideo', 'Detergente', 'Jabón en pan', 'Alcohol líquido a 70%', 'Sal', 'Lavandina']
 
 function agregarArticulo() {
+
   // se obtienen los elementos del nuevo articulo a cargar
   var list = document.getElementById('list')
   var articulo = document.getElementById('articulo').value
@@ -15,6 +16,10 @@ function agregarArticulo() {
   nombreArticulo = nombreArticulo.slice(0, - (nombreArticulo.length - nombreArticulo.indexOf('(')))
   var cantidad = document.getElementById('cantidad').value
   //Agrega al final
+
+  if (cantidad === '' || cantidad === null) {
+    return null
+  }
 
   // se crea un nuevo itema para la lista y se le agrega la clase
   var newItem = document.createElement('li')
