@@ -17,7 +17,7 @@ function agregarArticulo() {
   var cantidad = document.getElementById('cantidad').value
   //Agrega al final
 
-  if (cantidad === '' || cantidad === null) {
+  if (cantidad === '' || cantidad === null || cantidad === 0) {
     return null
   }
 
