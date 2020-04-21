@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="" />
+    <!-- agregamos la hamburguesa -->
+    <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
 
     <style>
         #mapid {
@@ -22,19 +28,54 @@
 </head>
 
 <body>
-    <h1>Natan </h1>
-    <div>
-        <h2> Mapa de las Comunidades anotadas </h2>
-    </div>
-    <div>
-        <h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
-    </div>
-
-    <div id="mapid"></div>
 
 
+    <aside class="mdc-drawer mdc-drawer--dismissible">
+        <div class="mdc-drawer__content">
+            <div class="mdc-list">
+                <a class="mdc-list-item mdc-list-item--activated" href="/mapa" aria-current="page">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
+                    <span class="mdc-list-item__text">Mapa</span>
+                </a>
+                <a class="mdc-list-item" href="/">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+                    <span class="mdc-list-item__text">Formulario</span>
+                </a>
+                <a class="mdc-list-item" href="/logout">
+                    <i class="material-icons mdc-list-item__graphic" aria-hidden="true">meeting_room</i>
+                    <span class="mdc-list-item__text">Cerrar sesión</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <div class="mdc-drawer-app-content">
+        <header class="mdc-top-app-bar app-bar" id="app-bar">
+            <div class="mdc-top-app-bar__row">
+                <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                    <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+                    <span class="mdc-top-app-bar__title">Comunidades alcanzadas</span>
+                </section>
+            </div>
+        </header>
+
+        <main class="main-content" style="overflow-x: hidden;" id="main-content">
+            <div class="mdc-top-app-bar--fixed-adjust">
+                <!-- contenido de la app -->
+                <h1>Natan </h1>
+                <div>
+                    <h2> Mapa de las Comunidades anotadas </h2>
+                </div>
+                <div>
+                    <h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
+                </div>
+                <div id="mapid"></div>
+
+            </div>
+        </main>
 
 </body>
+
 
 {% comment %} javascript del leaflet {% endcomment %}
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
@@ -66,7 +107,7 @@
     for (index = 0; index < datos.length; index++) {
         //var ima= '<img src="' + datos[index].url + '"height=40% width=50% >';
 
-        lista_aux = ['<h2>' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable +"</h3>" +"<h2>Meta:" + datos[index].meta + "</h2>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+        lista_aux = ['<h2>' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable + "</h3>" + "<h2>Meta:" + datos[index].meta + "</h2>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
         plano.push(lista_aux);// agregamos al array
     }
 
@@ -86,7 +127,7 @@
                 fillOpacity: 0.5,
                 radius: 3500
             }).addTo(mymap);
-        }else{
+        } else {
 
             var circle = L.circle([plano[i][1], plano[i][2]], {
                 color: 'red',
@@ -97,6 +138,16 @@
         }
 
     }
+
+
+
+    const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+
+    const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
+    topAppBar.setScrollTarget(document.getElementById('main-content'));
+    topAppBar.listen('MDCTopAppBar:nav', () => {
+        drawer.open = !drawer.open;
+    });
 
 
 

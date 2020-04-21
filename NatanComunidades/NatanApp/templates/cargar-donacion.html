@@ -21,15 +21,15 @@
 <aside class="mdc-drawer mdc-drawer--dismissible">
   <div class="mdc-drawer__content">
       <div class="mdc-list">
-          <a class="mdc-list-item mdc-list-item--activated" href="#" aria-current="page">
+          <a class="mdc-list-item mdc-list-item--activated" href="/mapa" aria-current="page">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
-              <span class="mdc-list-item__text">Mapa</span>
+              <span class="mdc-list-item__text" >Mapa</span>
           </a>
-          <!-- <a class="mdc-list-item" href="#">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
-              <span class="mdc-list-item__text">Outgoing</span>
-          </a> -->
-          <a class="mdc-list-item" href="#">
+           <a class="mdc-list-item" href="/">
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+              <span class="mdc-list-item__text">Formulario</span>
+          </a>
+          <a class="mdc-list-item" href="/logout">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">meeting_room</i>
               <span class="mdc-list-item__text">Cerrar sesión</span>
           </a>
@@ -56,7 +56,7 @@
               <ul id="list" class="list-group" style="margin-bottom: 35px;">
                 <!-- acá se cargan los items agregados -->
               </ul>
-              <form id="formulario" action="/cargar/" method="post">
+              <form id="formulario" action="/cargar/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="articulo">Articulo:</label>
@@ -70,24 +70,26 @@
                     {% endfor %}
                   </select>
                 </div>
+                <input name="listaArticulos[]" type="text" id="listaArticulos" style="display:none">
+                <input type="text" name="listaCantidades[]" id="listaCantidades" style="display:none">
                 <div class="form-group">
                   <label for="cantidad">Cantidad:</label>
                   <div class="row ml-1">
-                    <input type="number" class="form-control form-control-sm w-25" id="cantidad">
+                    <input type="number" class="form-control form-control-sm w-25" id="cantidad" name="cantidad">
                     <button class="btn ml-2" style="background-color:#6200ED; color:white; border-bottom-width: 0; border-top-width: 0; padding-bottom: 4px; padding-top: 4px;" id="agregarArt" type="button" onclick="agregarArticulo()">+</button>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="donante">Donante:</label>
                   <div class="row ml-1">
-                    <input type="text" class="form-control form-control-sm w-75" id="donante" required>
+                    <input type="text" class="form-control form-control-sm w-75" id="donante" name="donante" required>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="imagen">Foto:</label>
-                  <input type="file" class="form-control-file" id="imagen">
+                  <input type="file" class="form-control-file" name="imagen" id="imagen">
                 </div>
-                <input class="btn" style="background-color: #6200ED; color:white;" onclick="envio()" type="submit" value="GUARDAR">
+                <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
               </form>
             </div>
 
@@ -119,10 +121,8 @@ topAppBar.listen('MDCTopAppBar:nav', () => {
 });
 
 
+
 </script>
-
-
-
 </body>
 
 </html>

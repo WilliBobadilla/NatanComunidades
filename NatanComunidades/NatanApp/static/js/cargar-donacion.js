@@ -48,10 +48,20 @@ function agregarArticulo() {
   list.appendChild(newItem)
 
   document.getElementById('cantidad').value = ''
+  envio()
 }
 
 function borrar(e) {
   e.target.parentElement.remove()
+  var posicion_a_eliminar=e.target.parentElement.attributes[0].nodeValue
+  var pos_en_lista= listaArticulos.indexOf(posicion_a_eliminar);
+  listaArticulos.splice(pos_en_lista,1)
+  listaCantidades.splice(pos_en_lista,1)
+
+ 
+  console.log(typeof(posicion_a_eliminar))
+  console.log(posicion_a_eliminar)
+  envio()
 }
 
 function envio() {
@@ -63,12 +73,17 @@ function envio() {
     return null
   }
 
-  $.post('cargarlista',
+  $.post('/cargarlista',
     {
       articulos: listaArticulos,
       cantidades: listaCantidades
     },
     function (response) {
-      alert(response.mensaje);
+      console.log(response.mensaje);
     });
+}
+function mostrar(pagina){
+  console.log(pagina)
+  window.location= pagina
+
 }
