@@ -55,9 +55,13 @@ function borrar(e) {
 }
 
 function envio() {
-  console.log(listaArticulos)
-  console.log(listaCantidades)
-  console.log($)
+  // console.log(listaArticulos)
+  // console.log(listaCantidades)
+  var counter = document.getElementById('list').childElementCount
+  console.log(counter)
+  if ( counter === 0 || donante === '' || donante === null){
+    return null
+  }
 
   $.post('cargarlista',
     {
