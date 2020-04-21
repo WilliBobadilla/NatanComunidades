@@ -8,55 +8,126 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="static/css/cargar-donacion.css">
+
+<!-- agregamos la hamburguesa -->
+<link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+<script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
+
 </head>
-<body id='app'>
-  <header>
-    <nav class="navbar">
-      <a class="navbar-brand text-light" href="#">Cargar donación</a>
-    </nav>
+
+<aside class="mdc-drawer mdc-drawer--dismissible">
+  <div class="mdc-drawer__content">
+      <div class="mdc-list">
+          <a class="mdc-list-item mdc-list-item--activated" href="#" aria-current="page">
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
+              <span class="mdc-list-item__text">Mapa</span>
+          </a>
+          <a class="mdc-list-item" href="#">
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
+              <span class="mdc-list-item__text">Outgoing</span>
+          </a>
+          <a class="mdc-list-item" href="#">
+              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">highlight_off</i>
+              <span class="mdc-list-item__text">Drafts</span>
+          </a>
+      </div>
+  </div>
+</aside>
+
+<div class="mdc-drawer-app-content">
+  <header class="mdc-top-app-bar app-bar" id="app-bar">
+      <div class="mdc-top-app-bar__row">
+          <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+              <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+              <span class="mdc-top-app-bar__title">Cargar donación</span>
+          </section>
+      </div>
   </header>
-    <div class="container" style="margin-top: 25px;">
-      <h5>Lista de articulos donados.</h4>
-      <ul id="list" class="list-group" style="margin-bottom: 35px;">
-        <!-- acá se cargan los items agregados -->
-      </ul>
-      <form id="formulario" action="/cargar/" method="post">
-        <div class="form-group">
-          <label for="articulo">Articulo:</label>
-          <select class="form-control w-75" id="articulo">
-            {% for articulo in articulos %}
-              {% if articulo.id == 1 %}
-              <option value="{{articulo.id}}" selected>{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
-              {% else %}
-              <option value="{{articulo.id}}">{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
-              {% endif %}
-            {% endfor %}
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="cantidad">Cantidad:</label>
-          <div class="row ml-1">
-            <input type="number" class="form-control form-control-sm w-25" id="cantidad">
-            <button class="btn ml-2" style="background-color:#6200ED; color:white; border-bottom-width: 0; border-top-width: 0; padding-bottom: 4px; padding-top: 4px;" id="agregarArt" type="button" onclick="agregarArticulo()">+</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="donante">Donante:</label>
-          <div class="row ml-1">
-            <input type="text" class="form-control form-control-sm w-75" id="donante" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="imagen">Foto:</label>
-          <input type="file" class="form-control-file" id="imagen">
-        </div>
-        <input class="btn" style="background-color: #6200ED; color:white;" onclick="envio()" type="submit" value="GUARDAR">
-      </form>
-    </div>
+
+  <main class="main-content" id="main-content">
+      <div class="mdc-top-app-bar--fixed-adjust">
+          <!-- App Content -->
+          <div>
+          <header>
+            <nav class="navbar">
+              <a class="navbar-brand text-light" href="#">Cargar donación</a>
+            </nav>
+          </header>
+            <div class="container" style="margin-top: 25px;">
+              <h5>Lista de articulos donados.</h4>
+              <ul id="list" class="list-group" style="margin-bottom: 35px;">
+                <!-- acá se cargan los items agregados -->
+              </ul>
+              <form id="formulario" action="/cargar/" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="articulo">Articulo:</label>
+                  <select class="form-control w-75" id="articulo">
+                    {% for articulo in articulos %}
+                      {% if articulo.id == 1 %}
+                      <option value="{{articulo.id}}" selected>{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
+                      {% else %}
+                      <option value="{{articulo.id}}">{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="cantidad">Cantidad:</label>
+                  <div class="row ml-1">
+                    <input type="number" class="form-control form-control-sm w-25" id="cantidad">
+                    <button class="btn ml-2" style="background-color:#6200ED; color:white; border-bottom-width: 0; border-top-width: 0; padding-bottom: 4px; padding-top: 4px;" id="agregarArt" type="button" onclick="agregarArticulo()">+</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="donante">Donante:</label>
+                  <div class="row ml-1">
+                    <input type="text" class="form-control form-control-sm w-75" id="donante" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="imagen">Foto:</label>
+                  <input type="file" class="form-control-file" id="imagen">
+                </div>
+                <input class="btn" style="background-color: #6200ED; color:white;" onclick="envio()" type="submit" value="GUARDAR">
+              </form>
+            </div>
+
+
+
+      </div>
+  </main>
+</div>
+
+
+
+
+
+
+<!-- <body id='app'> -->
+  
   <script src="static/js/cargar-donacion.js"></script>
   <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+ const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+
+const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
+topAppBar.setScrollTarget(document.getElementById('main-content'));
+topAppBar.listen('MDCTopAppBar:nav', () => {
+    drawer.open = !drawer.open;
+});
+
+
+</script>
+
+
+
 </body>
+
 </html>
