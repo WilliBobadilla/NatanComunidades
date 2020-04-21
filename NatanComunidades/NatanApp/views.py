@@ -113,9 +113,6 @@ def cargar_lista_articulos(request):
   lista_cantidades1=[]
   lista_articulos=request.POST.getlist('articulos[]')
   lista_cantidades=request.POST.getlist('cantidades[]')
-  print(articulos)
-  print(cantidades)
-
   return JsonResponse({"mensaje":"Agregado"})
 
 
