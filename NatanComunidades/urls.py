@@ -25,5 +25,6 @@ urlpatterns = [
     path('cargarlista', cargar_lista_articulos),
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
-    path('logout',logout_request)
+    path('logout',logout_request),
+    path('mapa_cargar',mapa_cargar)
 ]

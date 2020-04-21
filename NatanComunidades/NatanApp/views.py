@@ -114,25 +114,50 @@ def cargar_lista_articulos(request):
 def mapa(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
-
-  datos_comunidades=consulta_datos()
-  lista=[ ]
-  for item in datos_comunidades:
-      if item.entregado:
-        entregado=1
-      else:
-        entregado=0
-      cada_dato={"nombre":item.nombre ,"responsable": item.responsable,
-                    "ubicacion": {"latitud": item.latitud,
-                                    "longitud": item.longitud
-                                  },
-                           "entregado":entregado
-                }
-      lista.append(cada_dato) # agregamos a la lista
-
+  lista=consulta_datos()
   data = {"geo": lista} # al final enviamos esto 
   return render (request,'map.html',data)
-  
+
+
+def mapa_cargar(request):
+  """
+  vista que se maneja para cargar datos de las \n
+  comunidades a traves de un mapa
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
+  if request.method == 'POST':
+    nombre= request.POST.get("nombre")
+    responsable=request.POST.get("responsable")
+    latitud=float(request.POST.get("latitud"))
+    longitud=float(request.POST.get("longitud"))
+    meta=int(request.POST.get("meta"))
+    disp=int(request.POST.get("disp"))
+    entregado=request.POST.get("entregado")
+    if entregado=="True":
+      entregado=True
+    else: 
+      entregado=False 
+    
+    listo=request.POST.get("listo")
+    if listo=="True":
+      listo=True
+    else: 
+      listo=False 
+    
+    datos_comunidades=Comunidad(nombre=nombre,responsable=responsable,latitud=latitud,longitud=longitud,meta=meta,disp=disp,entregado=entregado,listo=listo)
+    datos_comunidades.save()
+    lista=consulta_datos()
+    data = {"geo": lista} # al final enviamos esto 
+    return render(request,'mapa_agregar_data.html',data)
+  else:
+    lista=consulta_datos()
+    data = {"geo": lista} # al final enviamos esto 
+    return render(request,'mapa_agregar_data.html',data)
+
+
+
+
 
 
 
@@ -157,9 +182,25 @@ def logout_request(request):
     return HttpResponseRedirect("/")
 
 
+
+
 def consulta_datos():
   """
   Funcion que devuelve toda la info de las comundidades\n
-  Devuelve en formato querydict
+  Devuelve en formato diccionario
   """
-  return Comunidad.objects.all()
+  datos_comunidades=Comunidad.objects.all()
+  lista=[ ]
+  for item in datos_comunidades:
+      if item.entregado:
+        entregado=1
+      else:
+        entregado=0
+      cada_dato={"nombre":item.nombre ,"responsable": item.responsable,"meta":item.meta,
+                    "ubicacion": {"latitud": item.latitud,
+                                    "longitud": item.longitud
+                                  },
+                           "entregado":entregado
+                }
+      lista.append(cada_dato) # agregamos a la lista
+  return lista 
