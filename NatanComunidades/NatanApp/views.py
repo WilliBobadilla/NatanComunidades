@@ -113,17 +113,17 @@ def cargar_lista_articulos(request):
   lista_cantidades1=[]
   lista_articulos=request.POST.getlist('articulos[]')
   lista_cantidades=request.POST.getlist('cantidades[]')
-  print(articulos)
-  print(cantidades)
-
   return JsonResponse({"mensaje":"Agregado"})
 
 
 def mapa(request):
+  if request.user.is_staff:
+    print("soy staff y que ")
   if not request.user.is_authenticated:
-        return render(request,'prueba_login.html')
+      return render(request,'prueba_login.html')
   lista=consulta_datos()
-  data = {"geo": lista} # al final enviamos esto 
+  cant_comunidades=len(Comunidad.objects.all())
+  data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
   return render (request,'map.html',data)
 
 
@@ -156,11 +156,13 @@ def mapa_cargar(request):
     datos_comunidades=Comunidad(nombre=nombre,responsable=responsable,latitud=latitud,longitud=longitud,meta=meta,disp=disp,entregado=entregado,listo=listo)
     datos_comunidades.save()
     lista=consulta_datos()
-    data = {"geo": lista} # al final enviamos esto 
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
     return render(request,'mapa_agregar_data.html',data)
   else:
     lista=consulta_datos()
-    data = {"geo": lista} # al final enviamos esto 
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
     return render(request,'mapa_agregar_data.html',data)
 
 
