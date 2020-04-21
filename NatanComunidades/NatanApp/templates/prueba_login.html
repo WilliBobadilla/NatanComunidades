@@ -1,42 +1,97 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
 	<meta charset="utf-8" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 	<title>Inventario - Login</title>
-	
-	<link type="text/css" rel="stylesheet" href="/static/css/login.css" media="all" />
-	<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,600" rel="stylesheet" type="text/css">
-	<link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
-	
-	<!-- <script type="text/javascript" src="/static/js/jquery.min.js"></script> -->
-	<!-- <script type="text/javascript" src="/static/js/login.js"></script> -->
+
+
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<style>
+		.container {
+			margin: 0 auto;
+			margin-top: 200px;
+			width: 320px;
+		}
+
+		.boton {
+			border: none;
+			height: 40px;
+			width: 90px;
+			color: white;
+			background: #6200EE;
+			border-radius: 5px;
+			transition: 0.3s;
+		}
+
+		.boton:hover {
+			background: rgb(67, 0, 161);
+			color: white;
+		}
+
+		.user {
+			background: rgba(33, 33, 33, 0.08);
+			margin-bottom: 20px;
+			width: 260px;
+			height: 50px;
+			border: none;
+			padding: 10px;
+			color: rgba(0, 0, 0, 0.6);
+			border-radius: 5px;
+			transition: 0.3s;
+		}
+
+		.user:hover {
+			background: rgba(33, 33, 33, 0.171);
+			color: rgba(0, 0, 0, 0.6);
+		}
+
+
+		.pass {
+			background: rgba(33, 33, 33, 0.08);
+			margin-bottom: 20px;
+			width: 260px;
+			height: 50px;
+			border: none;
+			padding: 10px;
+			color: rgba(0, 0, 0, 0.6);
+			border-radius: 5px;
+			transition: 0.3s;
+		}
+
+		.pass:hover {
+			background: rgba(33, 33, 33, 0.171);
+			color: rgba(0, 0, 0, 0.6);
+		}
+
+		p{
+			color: rgba(0, 0, 0, 0.6);
+			text-align: center;
+		}
+	</style>
 </head>
+
 <body>
-	<div id="center"></div>
 	
-	<div id="content">
-		<div id="logo">
-			<img src="/static/img/eip.jpeg" width="225" height="75" alt="Invento" />
-		</div>
-		
-		<div id="login">
-			<div id="error"></div>
-			<form method="POST" action="/solicitud_login" name="logueo">
+	<div class="container">
+		<form action="/solicitud_login" method="post">
 			{% csrf_token %}
-			
-			 USUARIO:<br />
-				<input type="text" name="username" /><br />
-				CONTRASEÑA:<br />
-				<input type="password" name="password" /><br /> 
-<!-- 				
-				 {{ form.as_p }} -->
-                <input type="submit" name="enviar" value="Ingresar" />
-                <h2>{{mensaje}}</h2>
-			</form>
-		</div>
+			<div class="col text-center">
+				<input type="text" name="username" class="user" placeholder="usuario" required>
+				<input type="password" name="password" class="pass" placeholder="password" required>
+			</div>
+			<div class="col text-center">
+				<input type="submit" value="INGRESAR" class="boton">
+			</div>
+			<p>{{mensaje}}</p>
+		</form>
 	</div>
+
 </body>
+
 </html>

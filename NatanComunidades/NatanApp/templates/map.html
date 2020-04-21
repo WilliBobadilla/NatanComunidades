@@ -60,7 +60,7 @@
     for (index = 0; index < datos.length; index++) {
         //var ima= '<img src="' + datos[index].url + '"height=40% width=50% >';
 
-        lista_aux = ['<h2>' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable  + "</h3>" + "<h2>Meta:" +datos[index].meta +"</h2>" , datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+        lista_aux = ['<h2>N°:' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable + ' ' + datos[index].apellido + "</h3>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
         plano.push(lista_aux);// agregamos al array
     }
 
@@ -76,7 +76,7 @@
 
             var circle = L.circle([plano[i][1], plano[i][2]], {
                 color: 'green',
-                fillColor: '#0f3',
+                fillColor: '#00ff00',
                 fillOpacity: 0.5,
                 radius: 3500
             }).addTo(mymap);
