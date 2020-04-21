@@ -45,6 +45,8 @@ function agregarArticulo() {
 
   // se agrega el item a la lista
   list.appendChild(newItem)
+
+  document.getElementById('cantidad').value = ''
 }
 
 function borrar(elemento) {
