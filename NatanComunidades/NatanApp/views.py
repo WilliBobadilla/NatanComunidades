@@ -64,6 +64,14 @@ def home(request):
   articulos = Articulo.objects.all()
   return render(request, 'index.html', {'articulos':articulos})
 
+def cargar_donacion(request):
+  if not request.user.is_authenticated: 
+    return render(request,"prueba_login.html")
+  #Trata de cargar de forma predeterminada 
+  
+  articulos = Articulo.objects.all()
+  return render(request, 'cargar-donacion.html', {'articulos':articulos})
+
 
 # Pedidos
 
