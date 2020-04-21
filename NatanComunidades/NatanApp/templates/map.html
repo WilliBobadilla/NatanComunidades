@@ -12,8 +12,8 @@
 
     <style>
         #mapid {
-            height: 400px;
-            width: 600px;
+            height: 480px;
+            width: 800px;
         }
     </style>
 
@@ -22,7 +22,13 @@
 </head>
 
 <body>
-    {% csrf_token %}
+    <h1>Natan </h1>
+    <div>
+        <h2> Mapa de las Comunidades anotadas </h2>
+    </div>
+    <div>
+        <h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
+    </div>
 
     <div id="mapid"></div>
 
@@ -60,7 +66,7 @@
     for (index = 0; index < datos.length; index++) {
         //var ima= '<img src="' + datos[index].url + '"height=40% width=50% >';
 
-        lista_aux = ['<h2>N°:' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable + ' ' + datos[index].apellido + "</h3>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+        lista_aux = ['<h2>' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable +"</h3>" +"<h2>Meta:" + datos[index].meta + "</h2>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
         plano.push(lista_aux);// agregamos al array
     }
 
