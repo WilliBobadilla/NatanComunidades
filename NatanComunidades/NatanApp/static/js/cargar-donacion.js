@@ -1,8 +1,6 @@
-// $("#articulos").val($("#articulos option:eq(5)").val());
-// $("#articulos").selectmenu("refresh");
 
-
-var productos = ['Azúcar', 'Leche en polvo/cartón', 'Yerba', 'Panificados secos', 'Harina', 'Aceite', 'Pollo/Carne enlatada', 'Poroto', 'Arroz', 'Fideo', 'Detergente', 'Jabón en pan', 'Alcohol líquido a 70%', 'Sal', 'Lavandina']
+var listaArticulos = []
+var listaCantidades = []
 
 function agregarArticulo() {
 
@@ -20,6 +18,9 @@ function agregarArticulo() {
   if (cantidad === '' || cantidad === null || cantidad === 0) {
     return null
   }
+
+  listaArticulos.push(articulo)
+  listaCantidades.push(cantidad)
 
   // se crea un nuevo itema para la lista y se le agrega la clase
   var newItem = document.createElement('li')
@@ -49,13 +50,14 @@ function agregarArticulo() {
   document.getElementById('cantidad').value = ''
 }
 
-function borrar(elemento) {
-  elemento.target.parentElement.remove()
+function borrar(e) {
+  e.target.parentElement.remove()
 }
 
 function envio() {
   console.log(listaArticulos)
   console.log(listaCantidades)
+  console.log($)
 
   $.post('cargarlista',
     {
