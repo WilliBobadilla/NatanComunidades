@@ -119,6 +119,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+<<<<<<< HEAD
 LOGIN_URL = '/home'
 LOGOUT_REDIRECT_URL = "/home"  # Route defined in app/urls.py
 LOGIN_REDIRECT_URL = '/home'
+=======
+
+LOGIN_REDIRECT_URL = '/home'
+
+MEDIA_URL = '/img/'
+
+MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NatanComunidades', 'NatanApp', 'static')
+>>>>>>> 926c8227cf4818974a56289d162664cc4a69dcef

@@ -7,6 +7,8 @@ from .forms import SignUpForm
 from django.contrib.auth import logout as do_logout
 
 
+from .forms import UploadImageForm
+
 
 from django.contrib.auth.decorators import login_required # para el login
 from django.contrib.auth import authenticate, login
@@ -69,17 +71,9 @@ def home(request):
   if not request.user.is_authenticated: 
     return render(request,"prueba_login.html")
   #Trata de cargar de forma predeterminada 
-  
+  imagen = UploadImageForm()
   articulos = Articulo.objects.all()
-  return render(request, 'index.html', {'articulos':articulos})
-
-def cargar_donacion(request):
-  if not request.user.is_authenticated: 
-    return render(request,"prueba_login.html")
-  #Trata de cargar de forma predeterminada 
-  
-  articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos})
+  return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
 
 
 # Pedidos
@@ -88,11 +82,12 @@ def cargar(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
   donante = request.POST.get('donante')
-  imagen = request.POST.get('imagen')
-  donacion = Donacion(donante = donante, imagen = imagen)
+  imagen = UploadImageForm(request.POST, request.FILES)
+  if imagen.is_valid():
+    imagen.save()
+  donacion = Donacion(donante = donante)
   donacion.save()
-  
-  
+
   global lista_articulos #usado para almacenar lo que viene por ajax
   global lista_cantidades # cuidar el uso de variables globales
   # vemos la donacion por articulo
@@ -120,8 +115,11 @@ def cargar_lista_articulos(request):
   global lista_cantidades # cuidar el uso de variables globales
   lista_articulos=[] # vaciamos por si es que viene una nueva solicitud reemplazando la anterior 
   lista_cantidades1=[]
+  
   lista_articulos=request.POST.getlist('articulos[]')
   lista_cantidades=request.POST.getlist('cantidades[]')
+  print("listas",lista_articulos)
+  print("listacant",lista_cantidades)
   return JsonResponse({"mensaje":"Agregado"})
 
 
