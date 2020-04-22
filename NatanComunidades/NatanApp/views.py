@@ -1,15 +1,26 @@
 from django.shortcuts import render,HttpResponseRedirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, redirect
 from django.urls import reverse
+from .forms import SignUpForm
+from django.contrib.auth import logout as do_logout
+
+
+from .forms import UploadImageForm
 
 
 from django.contrib.auth.decorators import login_required # para el login
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login
 
 from NatanComunidades.NatanApp.models import *
 
 # Create your views here.
+
+
+
+# ...
+
 
 lista_articulos=[]
 lista_cantidades=[]
@@ -60,17 +71,9 @@ def home(request):
   if not request.user.is_authenticated: 
     return render(request,"prueba_login.html")
   #Trata de cargar de forma predeterminada 
-  
+  imagen = UploadImageForm()
   articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos})
-
-def cargar_donacion(request):
-  if not request.user.is_authenticated: 
-    return render(request,"prueba_login.html")
-  #Trata de cargar de forma predeterminada 
-  
-  articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos})
+  return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
 
 
 # Pedidos
@@ -79,8 +82,10 @@ def cargar(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
   donante = request.POST.get('donante')
-  imagen = request.POST.get('imagen')
-  donacion = Donacion(donante = donante, imagen = imagen)
+  imagen = UploadImageForm(request.POST, request.FILES)
+  if imagen.is_valid():
+    imagen.save()
+  donacion = Donacion(donante = donante)
   donacion.save()
 
   global lista_articulos #usado para almacenar lo que viene por ajax
@@ -168,7 +173,28 @@ def mapa_cargar(request):
     return render(request,'mapa_agregar_data.html',data)
 
 
+def register_user(request):
 
+    msg     = None
+    success = False
+
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get("username")
+            raw_password = form.cleaned_data.get("password1")
+            user = authenticate(username=username, password=raw_password)
+
+            msg     = 'Usuario creado. Inicie sesión con sus datos.'
+            success = True   
+            #return redirect("/login/")
+        else:
+            msg = 'El formulario no es válido, intente nuevamente.'    
+    else:
+        form = SignUpForm()
+
+    return render(request, "register.html", {"form": form, "msg" : msg, "success" : success })
 
 
 
@@ -187,14 +213,16 @@ def solcitud_login(request):
         return HttpResponseRedirect(reverse("home"))
     return render(request,'prueba_login.html',{'mensaje':"Credenciales invalidas  "})
 
-
+def logout(request):
+    # Finalizamos la sesión
+    do_logout(request)
+    # Redireccionamos a la portada
+    return redirect('/')
+    
 def logout_request(request):
     logout(request)
     # Redirect to a success page.
     return HttpResponseRedirect("/")
-
-
-
 
 def consulta_datos():
   """

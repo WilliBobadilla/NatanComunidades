@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from NatanComunidades.NatanApp import views
+from NatanComunidades.NatanApp.views import register_user
 from NatanComunidades.NatanApp.views import *
 from django.conf import settings # new
 from django.urls import path, include # new
@@ -30,7 +32,9 @@ urlpatterns = [
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
     path('logout',logout_request),
-    path('cargar_donacion', cargar_donacion),
+    path('logout',logout),
+    path('register/', register_user, name="register"),
+    # path('cargar_donacion', cargar_donacion),
     path('mapa_cargar',mapa_cargar)
 ]
 if settings.DEBUG: # new
