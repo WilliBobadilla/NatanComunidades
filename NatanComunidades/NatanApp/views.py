@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponseRedirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -101,6 +101,21 @@ def cargar(request):
   lista_articulos=[]
   lista_articulos=[]
   return home(request)
+
+
+def ver_donaciones(request):
+  if not request.user.is_authenticated:
+    return render(request,'prueba_login.html')
+  try:
+    donacionesDb = Donacion.objects.all()
+  except:
+    return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.'})  
+  donaciones = []
+  for donacion in donacionesDb:
+    donaciones.append(donacion)
+    print(donaciones)
+  return render(request, 'ver_donaciones.html', {'donaciones': donaciones})
+
 
 
 @csrf_exempt 
