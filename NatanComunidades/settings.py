@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+import platform
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'NatanComunidades.urls'
@@ -74,12 +75,34 @@ WSGI_APPLICATION = 'NatanComunidades.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+#here we have to change to deploy in heroku 
+#para el config online, se deja este asi
+plataforma=platform.platform() # sacamos el SO, heroku tiene en su descripcion aws,
+# eso nos sirve para comprobar que esta corriendo en la nube
+if plataforma.find('aws')>=0: # esta en la nube
+    import dj_database_url  
+    import dotenv
+    DATABASES = {}
+    DATABASES['default'] = dj_database_url.config()
+    #static files
+    STATICFILES_DIRS = []
+    # (
+    #       os.path.join(BASE_DIR, 'static'),
+    #  )
+
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+else:
+    # this is for local deploy
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
 
 
 # Password validation
@@ -118,6 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+STATIC_ROOT  =   os.path.join(BASE_DIR, 'static') # esto es par el deploy en heroku 
 STATIC_URL = '/static/'
 LOGIN_URL = '/home'
 LOGIN_REDIRECT_URL = "/home"   # Route defined in app/urls.py
@@ -127,3 +151,4 @@ LOGIN_REDIRECT_URL = '/home'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
