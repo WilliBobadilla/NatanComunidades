@@ -76,7 +76,7 @@ def cargar(request):
   imagen = UploadImageForm(request.POST, request.FILES)
   if imagen.is_valid():
     imagen.save()
-  donacion = Donacion(donante = donante, imagen = imagen)
+  donacion = Donacion(donante = donante)
   donacion.save()
 
   global lista_articulos #usado para almacenar lo que viene por ajax
