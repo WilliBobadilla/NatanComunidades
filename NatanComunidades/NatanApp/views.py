@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 
+from .forms import UploadImageForm
+
 
 from django.contrib.auth.decorators import login_required # para el login
 from django.contrib.auth import authenticate, login,logout
@@ -60,17 +62,9 @@ def home(request):
   if not request.user.is_authenticated: 
     return render(request,"prueba_login.html")
   #Trata de cargar de forma predeterminada 
-  
+  imagen = UploadImageForm()
   articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos})
-
-def cargar_donacion(request):
-  if not request.user.is_authenticated: 
-    return render(request,"prueba_login.html")
-  #Trata de cargar de forma predeterminada 
-  
-  articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos})
+  return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
 
 
 # Pedidos
@@ -79,7 +73,9 @@ def cargar(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
   donante = request.POST.get('donante')
-  imagen = request.POST.get('imagen')
+  imagen = UploadImageForm(request.POST, request.FILES)
+  if imagen.is_valid():
+    imagen.save()
   donacion = Donacion(donante = donante, imagen = imagen)
   donacion.save()
 

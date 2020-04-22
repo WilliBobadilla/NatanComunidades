@@ -56,7 +56,7 @@
               <ul id="list" class="list-group" style="margin-bottom: 35px;">
                 <!-- acá se cargan los items agregados -->
               </ul>
-              <form id="formulario" action="/cargar/" method="post" enctype="multipart/form-data">
+              <form role="form" id="formulario" action="/cargar/" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group">
                   <label for="articulo">Articulo:</label>
@@ -86,8 +86,9 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="imagen">Foto:</label>
-                  <input type="file" class="form-control-file" name="imagen" id="imagen">
+                  <!-- <label for="imagen">Foto:</label> -->
+                  <!-- <input type="file" class="form-control-file" name="imagen" id="imagen"> -->
+                  {{imagen.as_p}}
                 </div>
                 <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
               </form>

@@ -26,6 +26,5 @@ urlpatterns = [
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
     path('logout',logout_request),
-    path('cargar_donacion', cargar_donacion),
     path('mapa_cargar',mapa_cargar)
 ]

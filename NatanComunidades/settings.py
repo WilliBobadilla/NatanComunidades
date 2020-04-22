@@ -121,3 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/home'
+
+MEDIA_URL = '/img/'
+
+MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'NatanComunidades', 'NatanApp', 'static')
