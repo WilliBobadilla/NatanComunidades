@@ -18,6 +18,10 @@ from django.urls import path
 from NatanComunidades.NatanApp import views
 from NatanComunidades.NatanApp.views import register_user
 from NatanComunidades.NatanApp.views import *
+from django.conf import settings # new
+from django.urls import path, include # new
+from django.conf.urls.static import static # new
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +35,8 @@ urlpatterns = [
     path('logout',logout),
     path('register/', register_user, name="register"),
     # path('cargar_donacion', cargar_donacion),
-    path('mapa_cargar',mapa_cargar),
     path('donaciones', ver_donaciones),
+    path('mapa_cargar',mapa_cargar)
 ]
+if settings.DEBUG: # new
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

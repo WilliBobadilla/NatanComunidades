@@ -202,10 +202,8 @@ def register_user(request):
             user = authenticate(username=username, password=raw_password)
 
             msg     = 'Usuario creado. Inicie sesión con sus datos.'
-            success = True
-            
+            success = True   
             #return redirect("/login/")
-
         else:
             msg = 'El formulario no es válido, intente nuevamente.'    
     else:
