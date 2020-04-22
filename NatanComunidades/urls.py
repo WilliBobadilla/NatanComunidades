@@ -28,11 +28,8 @@ urlpatterns = [
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
     path('logout',logout_request),
-<<<<<<< HEAD
     path('logout',logout),
     path('register/', register_user, name="register"),
-    path('cargar_donacion', cargar_donacion),
-=======
->>>>>>> 926c8227cf4818974a56289d162664cc4a69dcef
+    # path('cargar_donacion', cargar_donacion),
     path('mapa_cargar',mapa_cargar)
 ]

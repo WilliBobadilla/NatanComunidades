@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -37,7 +35,6 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
-=======
 from django import forms
 from .models import Donacion
 
@@ -47,4 +44,3 @@ class UploadImageForm(forms.ModelForm):
     class Meta:
         model = Donacion
         fields = ['imagen']
->>>>>>> 926c8227cf4818974a56289d162664cc4a69dcef
