@@ -107,13 +107,13 @@ def ver_donaciones(request):
   if not request.user.is_authenticated:
     return render(request,'prueba_login.html')
   try:
-    donacionesDb = Donacion.objects.all()
+    donacionesDb = Donacionxarticulo.objects.all()
   except:
     return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.'})  
   donaciones = []
   for donacion in donacionesDb:
-    donaciones.append(donacion)
-    print(donaciones)
+    donaciones.append(donacion[0])
+  print(donaciones)
   return render(request, 'ver_donaciones.html', {'donaciones': donaciones})
 
 
