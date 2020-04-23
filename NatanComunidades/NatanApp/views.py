@@ -116,7 +116,7 @@ def ver_donaciones(request):
   donaciones = []
   for donacion in donacionesDb:
     donaciones.append(donacion)
-    print(donaciones)
+  print(donaciones)
   return render(request, 'ver_donaciones.html', {'donaciones': donaciones})
 
 
