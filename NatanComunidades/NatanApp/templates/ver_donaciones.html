@@ -10,13 +10,13 @@
         <img src="/static/assets/demo/brand/logo.png" alt="">
       </div>
       
-			<div class="card" style="min-height: 46%; max-height: 450px;">
+			<div class="card" style="min-height: 43%; max-height: 450px;">
 				<div class="card-title text-center mt-3">
 					<h4>Plataforma Experimental
 					<br />
 					<strong>para Gestión de Comunidades</strong></h4>
 				</div>
-				<div class="card-body px-6 py-2 overflow-auto">
+				<div class="card-body px-6 py-2 overflow-auto text-center">
 					{% if msg %}
 						<h5>{{ msg | safe }}</h5>
 					{% else %}
@@ -29,11 +29,13 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>Mark</td>
-									<td>Otto</td>
-									<td>@mdo</td>
-								</tr>
+								{% for articulo, cantidad in resultado.items %}
+									<tr>
+										<td> {{ articulo }} </td>
+										<td> {{ cantidad }} </td>
+										<td> - </td>
+									</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 					{% endif %}

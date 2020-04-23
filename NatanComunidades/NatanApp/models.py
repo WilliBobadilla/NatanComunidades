@@ -18,7 +18,7 @@ class Articulo(models.Model):
 class Donacion(models.Model):
   donante = models.CharField(max_length=150, default='')
   fecha = models.DateField(default=timezone.now())
-  imagen = models.ImageField(upload_to='img/', null=True)
+  imagen = models.ImageField(upload_to='', null=True)
   observaciones = models.TextField(default='', blank=True)
   def __str__(self):
     return self.donante + ' - ' + str(self.fecha)

@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .forms import SignUpForm
 from django.contrib.auth import logout as do_logout
+from django.db.models import Sum
 
 
 from .forms import UploadImageForm
@@ -54,6 +55,7 @@ def cargardb(request):
       ('Sal', Medida.objects.get(simbolo ='Kg')),
       ('Lavandina', Medida.objects.get(simbolo ='L')),
       )
+      
     instancias = []
 
     for articulo in articulos:
@@ -101,23 +103,34 @@ def cargar(request):
   #vaciamos la varible global antes de cargar otro donante
   lista_articulos=[]
   lista_articulos=[]
-  return redirect("/")
-
-
+  return redirect('/')
 
 
 def ver_donaciones(request):
   if not request.user.is_authenticated:
     return render(request,'prueba_login.html')
   try:
-    donacionesDb = Donacion.objects.all()
+    donaciones = Donacionxarticulo.objects.all()
+    articulos = Articulo.objects.all()
   except:
-    return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.'})  
-  donaciones = []
-  for donacion in donacionesDb:
-    donaciones.append(donacion)
-    print(donaciones)
-  return render(request, 'ver_donaciones.html', {'donaciones': donaciones})
+    return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.'})
+
+  # sendArticulos = []
+  # sendCantidades = []
+  resultado = {}
+  for articulo in articulos:
+    sumatoria = donaciones.filter(articulo__nombre=articulo.nombre).aggregate(Sum('cantidad'))['cantidad__sum']
+    if sumatoria:
+      # sendCantidades.append(sumatoria)
+      # sendArticulos.append(articulo.nombre)
+      resultado[articulo.nombre] = sumatoria
+      # print(sendArticulos)
+      # print(sendCantidades)
+  # iterable = range(len(sendArticulos)-1)
+  # resultado = [sendArticulos, sendCantidades]
+  print(resultado)
+
+  return render(request, 'ver_donaciones.html', {'resultado': resultado})
 
 
 
