@@ -1,0 +1,55 @@
+{% extends "layouts/base-login.html" %}
+
+{% block title %} Login {% endblock %} 
+
+{% block content %}
+
+  <div class="row overflow-hidden">
+    <div class="col col-login mx-auto">
+      <div class="text-center mb-6">
+        <img src="/static/assets/demo/brand/logo.png" alt="">
+      </div>
+      
+			<div class="card" style="min-height: 46%; max-height: 450px;">
+				<div class="card-title text-center mt-3">
+					<h4>Plataforma Experimental
+					<br />
+					<strong>para Gestión de Comunidades</strong></h4>
+				</div>
+				<div class="card-body px-6 py-2 overflow-auto">
+					{% if msg %}
+						<h5>{{ msg | safe }}</h5>
+					{% else %}
+						<table class="table table-striped overflow-scroll">
+							<thead>
+								<tr>
+									<th scope="col">Articulo</th>
+									<th scope="col">Donaciones</th>
+									<th scope="col">Objetivo</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Mark</td>
+									<td>Otto</td>
+									<td>@mdo</td>
+								</tr>
+							</tbody>
+						</table>
+					{% endif %}
+				</div>
+			</div>
+			<div class="text-center text-muted">
+				<b>Oñondivepa Ñapytyvo</b> &copy; es una campaña de la <a href="https://fundacionnatan.org/"> Fundación Natán</a> y el
+				<a href="http://www.ieeeparaguay.org/acerca.html" >IEEE UNA SB Branch</a>
+				<br />
+				<!-- Código fuente <a href="#">disponible en GitHub.</a> -->
+			</div>
+		</div>
+	</div>
+		  
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+		  

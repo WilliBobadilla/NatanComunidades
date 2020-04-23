@@ -35,6 +35,7 @@ urlpatterns = [
     path('logout',logout),
     path('register/', register_user, name="register"),
     # path('cargar_donacion', cargar_donacion),
+    path('donaciones', ver_donaciones),
     path('mapa_cargar',mapa_cargar)
 ]
 
