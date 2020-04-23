@@ -96,7 +96,6 @@ if plataforma.find('aws')>=0: # esta en la nube
 
 else:
     # this is for local deploy
-
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

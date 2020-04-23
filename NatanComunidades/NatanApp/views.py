@@ -82,11 +82,12 @@ def cargar(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
   donante = request.POST.get('donante')
+  donacion = Donacion()
+  donacion.donante=donante
   imagen = UploadImageForm(request.POST, request.FILES)
   if imagen.is_valid():
-    imagen.save()
-  donacion = Donacion(donante = donante)
-  donacion.save()
+    donacion.imagen=imagen.cleaned_data['imagen']
+    donacion.save()
 
   global lista_articulos #usado para almacenar lo que viene por ajax
   global lista_cantidades # cuidar el uso de variables globales
@@ -100,14 +101,17 @@ def cargar(request):
   #vaciamos la varible global antes de cargar otro donante
   lista_articulos=[]
   lista_articulos=[]
-  return home(request)
+  return redirect("/")
+
+
 
 
 @csrf_exempt 
 def cargar_lista_articulos(request):
   """
   Funcion utilizada para manejar la peticion Ajax del lado del cliente\n
-  Esta funcion guarda en una lista global
+  Esta funcion guarda en una lista global, se actualiza con cada + que se \n
+  presione o con cada borrar que se presione del lado del cliente 
   """
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')

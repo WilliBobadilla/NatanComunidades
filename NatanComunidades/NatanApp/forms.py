@@ -43,4 +43,4 @@ class UploadImageForm(forms.ModelForm):
 
     class Meta:
         model = Donacion
-        fields = ['imagen']
+        fields = ['donante','imagen']

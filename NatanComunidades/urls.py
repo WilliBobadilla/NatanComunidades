@@ -37,5 +37,6 @@ urlpatterns = [
     # path('cargar_donacion', cargar_donacion),
     path('mapa_cargar',mapa_cargar)
 ]
+
 if settings.DEBUG: # new
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
