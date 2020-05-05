@@ -20,9 +20,6 @@ from NatanComunidades.NatanApp.models import *
 
 
 
-# ...
-
-
 lista_articulos=[]
 lista_cantidades=[]
 #Función para cargar los datos predeterminados
@@ -230,7 +227,17 @@ def register_user(request):
 
 
 
+def comunidades(request):
+  """
+  Vista en donde se puede cargar las comunidades \n
+  que van a recibir las donaciones
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
 
+
+
+  return render(request,"comunidades.html")
 def solcitud_login(request):
     """
     Aca se manejan las solicitudes de login 

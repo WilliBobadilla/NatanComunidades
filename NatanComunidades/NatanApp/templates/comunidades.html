@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natanapp</title>
+    <!-- para el mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="static/css/cargar-donacion.css">
+
+    <!-- agregamos la hamburguesa -->
+    <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
+
+    <style>
+        #mapid {
+            height: 200px;
+            width: 75%;
+        }
+    </style>
+</head>
+
+
+{% block content %}
+
+{% include 'layouts/slide-bar.html' %}
+
+{% endblock %}
+
+<main class="main-content" style="overflow-x: hidden;" id="main-content">
+    <div class="mdc-top-app-bar--fixed-adjust">
+
+        <h4> Formulario para anotar comunidades</h4>
+
+        <div id="formulario">
+
+            <form method="POST" id="perdidos_form" enctype="multipart/form-data" action="/comunidades">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <div class="row ml-1">
+                        <input type="text" class="form-control form-control-sm w-75" id="nombre" name="nombre" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cantidad_packs">Cantidad_packs:</label>
+                    <div class="row ml-1">
+                        <input type="number" class="form-control form-control-sm w-75" id="cantidad_packs"
+                            name="cantidad_packs" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="ubicacion">Ubicación comunidad:</label>
+                    <div class="row ml-1">
+                        <div id="mapid"></div>
+                        <input type="text" id="latitud" name="latitud" placeholder="Latitud" style="display: none"> <br>
+                        <input type="text" id="longitud" name="longitud" placeholder="Longitud" style="display: none">
+                        <br>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="responsable">Responsable:</label>
+                    <div class="row ml-1">
+                        <input type="text" class="form-control form-control-sm w-75" id="responsable" name="responsable"
+                            required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="numero_telefono">Teléfono del responsable:</label>
+                    <div class="row ml-1">
+                        <input type="text" class="form-control form-control-sm w-75" id="numero_telefono" name="numero_telefono"
+                            required>
+                    </div>
+                </div>
+                <div class="form-group">
+                        <label for="observacion">Observación:</label>
+                        <div class="row ml-1">
+                            <textarea class="form-control form-control-sm w-75" id="observacion" name="observacion"
+                                required> </textarea>
+                        </div>
+                    </div>
+                    <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
+
+    
+            </form>
+        </div>
+    </div>
+</main>
+
+
+<!-- <body id='app'> -->
+
+<script src="static/js/cargar-donacion.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+
+    const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
+    topAppBar.setScrollTarget(document.getElementById('main-content'));
+    topAppBar.listen('MDCTopAppBar:nav', () => {
+        drawer.open = !drawer.open;
+    });
+
+
+    $(function () {
+
+        curLocation = [-25.8295610860535, -56.29394531250001];
+        var map = L.map('mapid').setView(curLocation, 10);
+
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        map.attributionControl.setPrefix(false);
+
+        var marker = new L.marker(curLocation, {
+            draggable: 'true'
+        });
+
+        marker.on('dragend', function (event) {
+            var position = marker.getLatLng();
+            marker.setLatLng(position, {
+                draggable: 'true'
+            }).bindPopup(position).update();
+            $("#latitud").val(position.lat);
+            $("#longitud").val(position.lng).keyup();
+        });
+
+        $("#Latitude, #Longitude").change(function () {
+            var position = [parseInt($("#Latitude").val()), parseInt($("#Longitude").val())];
+            marker.setLatLng(position, {
+                draggable: 'true'
+            }).bindPopup(position).update();
+            map.panTo(position);
+        });
+
+        map.addLayer(marker);
+    })
+
+</script>
+</body>
+
+</html>
