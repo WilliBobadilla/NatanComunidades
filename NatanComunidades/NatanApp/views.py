@@ -20,9 +20,6 @@ from NatanComunidades.NatanApp.models import *
 
 
 
-# ...
-
-
 lista_articulos=[]
 lista_cantidades=[]
 #Función para cargar los datos predeterminados
