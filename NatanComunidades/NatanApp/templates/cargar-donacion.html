@@ -23,57 +23,54 @@
 
 {% endblock %}
   <main class="main-content" style="overflow-x: hidden;" id="main-content">
-      <div class="mdc-top-app-bar--fixed-adjust">
-          <!-- App Content -->
-          <div>
-            <div class="container" style="margin-top: 25px;">
-              <h5>Lista de articulos donados.</h4>
-              <ul id="list" class="list-group" style="margin-bottom: 35px;">
-                <!-- acá se cargan los items agregados -->
-              </ul>
-              <form role="form" id="formulario" action="/cargar/" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="form-group">
-                  <label for="articulo">Articulo:</label>
-                  <select class="form-control w-75" id="articulo">
-                    {% for articulo in articulos %}
-                      {% if articulo.id == 1 %}
-                      <option value="{{articulo.id}}" selected>{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
-                      {% else %}
-                      <option value="{{articulo.id}}">{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
-                      {% endif %}
-                    {% endfor %}
-                  </select>
-                </div>
-                <input name="listaArticulos[]" type="text" id="listaArticulos" style="display:none">
-                <input type="text" name="listaCantidades[]" id="listaCantidades" style="display:none">
-                <div class="form-group">
-                  <label for="cantidad">Cantidad:</label>
-                  <div class="row ml-1">
-                    <input type="number" class="form-control form-control-sm w-25" id="cantidad" name="cantidad">
-                    <button class="btn ml-2" style="background-color:#6200ED; color:white; border-bottom-width: 0; border-top-width: 0; padding-bottom: 4px; padding-top: 4px;" id="agregarArt" type="button" onclick="agregarArticulo()">+</button>
-                  </div>
-                </div>
-                 <div class="form-group">
-                  <label for="donante">Donante:</label>
-                  <div class="row ml-1">
-                    <input type="text" class="form-control form-control-sm w-75" id="donante" name="donante" required>
-                  </div>
-                </div> 
-                <div class="form-group">
-                   <label for="imagen">Foto:</label>
-                   <input type="file" class="form-control-file" name="imagen" id="imagen"> 
-                 
-                </div>
-                <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
-              </form>
+    <div class="mdc-top-app-bar--fixed-adjust">
+      <!-- App Content -->
+      <div>
+        <div class="container" style="margin-top: 25px;">
+          <h5>Lista de articulos donados.</h4>
+          <ul id="list" class="list-group" style="margin-bottom: 35px;">
+            <!-- acá se cargan los items agregados -->
+          </ul>
+          <form role="form" id="formulario" action="/cargar/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="articulo">Articulo:</label>
+              <select class="form-control w-75" id="articulo">
+                {% for articulo in articulos %}
+                  {% if articulo.id == 1 %}
+                  <option value="{{articulo.id}}" selected>{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
+                  {% else %}
+                  <option value="{{articulo.id}}">{{articulo.nombre}} <span>({{articulo.medida}})</span></option>
+                  {% endif %}
+                {% endfor %}
+              </select>
             </div>
-
-
-
+            <input name="listaArticulos[]" type="text" id="listaArticulos" style="display:none">
+            <input type="text" name="listaCantidades[]" id="listaCantidades" style="display:none">
+            <div class="form-group">
+              <label for="cantidad">Cantidad:</label>
+              <div class="row ml-1">
+                <input type="number" class="form-control form-control-sm w-25" id="cantidad" name="cantidad">
+                <button class="btn ml-2" style="background-color:#6200ED; color:white; border-bottom-width: 0; border-top-width: 0; padding-bottom: 4px; padding-top: 4px;" id="agregarArt" type="button" onclick="agregarArticulo()">+</button>
+              </div>
+            </div>
+              <div class="form-group">
+              <label for="donante">Donante:</label>
+              <div class="row ml-1">
+                <input type="text" class="form-control form-control-sm w-75" id="donante" name="donante" required>
+              </div>
+            </div> 
+            <div class="form-group">
+                <label for="imagen">Foto:</label>
+                <input type="file" class="form-control-file" name="imagen" id="imagen"> 
+              
+            </div>
+            <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
+          </form>
+        </div>
       </div>
+    </div>
   </main>
-</div>
 
 
 

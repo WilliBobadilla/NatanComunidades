@@ -162,7 +162,7 @@ def mapa(request):
       return render(request,'prueba_login.html')
   lista=consulta_datos()
   cant_comunidades=len(Comunidad.objects.all())
-  data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+  data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
   return render (request,'map.html',data)
 
 
