@@ -6,4 +6,11 @@ html body {
 
 .navbar {
   background-color: #6200ED;
+  position: relative;
+  z-index: 2;
+}
+
+#mapid{
+  position: relative;
+  z-index: ;
 }
