@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
         integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
         crossorigin="" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
         integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
         crossorigin=""></script>
@@ -25,11 +27,36 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
+    <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
 
     <style>
         #mapid {
             height: 200px;
             width: 75%;
+        }
+
+        /* codigo para superponer el navbar */
+        .navbar {
+            background-color: #6200ED;
+            position: relative;
+            z-index: 2;
+        }
+
+        #mapid {
+            position: relative;
+            z-index: 1;
+        }
+
+        #simple-list{
+            margin-top: 20px;
+            margin-left: 10px;
+            list-style-type: none;
+            padding-left: 0;
+            width: 200px;
+        }
+
+        .fa-stream{
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -84,36 +111,66 @@
                 <div class="form-group">
                     <label for="numero_telefono">Teléfono del responsable:</label>
                     <div class="row ml-1">
-                        <input type="text" class="form-control form-control-sm w-75" id="numero_telefono" name="numero_telefono"
-                            required>
+                        <input type="text" class="form-control form-control-sm w-75" id="numero_telefono"
+                            name="numero_telefono" required>
                     </div>
                 </div>
                 <div class="form-group">
-                        <label for="observacion">Observación:</label>
-                        <div class="row ml-1">
-                            <textarea class="form-control form-control-sm w-75" id="observacion" name="observacion"
-                                required> </textarea>
-                        </div>
+                    <label for="observacion">Observación:</label>
+                    <div class="row ml-1">
+                        <textarea class="form-control form-control-sm w-75" id="observacion" name="observacion"
+                            required> </textarea>
                     </div>
-                    <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
+                </div>
+                <input class="btn" style="background-color: #6200ED; color:white;" type="submit" value="GUARDAR">
 
-    
+
+                <ul id="simple-list">
+                    <li><i class="fas fa-stream"></i>bread</li>
+                    <hr>
+                    <li><i class="fas fa-stream"></i>vegetables</li>
+                    <hr>
+                    <li><i class="fas fa-stream"></i>meat</li>
+                    <hr>
+                    <li><i class="fas fa-stream"></i>milk</li>
+                    <hr>
+                    <li><i class="fas fa-stream"></i>butter</li>
+                    <hr>
+                    <li><i class="fas fa-stream"></i>ice cream</li>
+                    <hr>
+                </ul>
+                <br />
+
+
+
             </form>
         </div>
     </div>
 </main>
 
 
-<!-- <body id='app'> -->
 
+<!-- codigo para la lista draggable con jquery -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="static/js/jquery.dragsort.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#simple-list").dragsort();
+    });
+</script>
+
+<!-- <body id='app'> -->
 <script src="static/js/cargar-donacion.js"></script>
 <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+</script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
@@ -159,7 +216,6 @@
 
         map.addLayer(marker);
     })
-
 </script>
 </body>
 
