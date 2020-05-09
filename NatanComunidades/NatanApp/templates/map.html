@@ -7,7 +7,7 @@
 		<title>Natanapp</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-		<link rel="stylesheet" href="static/css/cargar-donacion.css">
+		<link rel="stylesheet" href="/static/css/cargar-donacion.css">
 
 		{% comment %} css del leaflet {% endcomment %}
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
@@ -41,6 +41,21 @@
 				<div>
 						<h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
 				</div>
+				<div>
+				
+					<form method="POST" id="formulario"  onchange="consulta()">
+						{% csrf_token %}
+					<label for="lname">Orden de las Comunidades:</label><br>
+					<select id="select_comunidad" class="form-control w-75" name="listo">
+						{% for item in geo %}
+						<option value="{{item.id}}" id="{{item.id}}" latitud="{{item.ubicacion.latitud}}" longitud="{{item.ubicacion.longitud}}">{{item.nombre}}</option>
+						{% endfor %}
+					</select><br>
+					    
+					<!-- <input type="submit" value="Subir"> -->
+				</form>
+				</div>
+				 
 				<div id="mapid"></div>
 			</div>
 		</main>
@@ -70,8 +85,7 @@
 		var index = 0; //para recorrer la lista
 		var lista_aux = new Array();
 		for (index = 0; index < datos.length; index++) {
-				//var ima= '<img src="' + datos[index].url + '"height=40% width=50% >';
-				lista_aux = ['<h2>' + datos[index].nombre + '</h2>' + '<h3>' + datos[index].responsable + "</h3>" + "<h2>Meta:" + datos[index].meta + "</h2>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+				lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' +datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
 				plano.push(lista_aux);// agregamos al array
 		}
 
@@ -96,6 +110,34 @@
 					}).addTo(mymap);
 				}
 		}
+		function check() {
+			var com=document.getElementById("select_comunidad").value 
+			return com 
+		}
+		function consulta()
+		{
+			
+			//var encontrar= plano.find(check)
+			//console.log(encontrar)
+			var com=document.getElementById("select_comunidad").value 
+			var option=document.getElementById(com.toString())
+
+			var latitud= option.getAttribute("latitud")
+			var longitud=option.getAttribute("longitud")
+			console.log("dfa: "+ option)
+			encontrar=plano[com]
+			
+			console.log("encontrar: "+ encontrar)
+			//var latitud=encontrar.latitud
+			//var longitud=encontrar.longitud
+			console.log(" latitud"+latitud)
+			console.log("longitud"+ longitud)
+			mymap.setView([latitud,longitud],12)
+		}
+
+
+
+
 		const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
 		const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
 		topAppBar.setScrollTarget(document.getElementById('main-content'));

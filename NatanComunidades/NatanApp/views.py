@@ -234,10 +234,26 @@ def comunidades(request):
   """
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
+  if request.method=='POST':
+    datos=request.POST 
+    cant_comunidades=len(Comunidad.objects.all())
+    orden=cant_comunidades
+    datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
+    datos_comunidades.save()
+    lista=consulta_datos()
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+    return render(request,'comunidades.html',data)
+  else:
+    lista=consulta_datos()
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+    return render(request,'comunidades.html',data)
 
 
 
-  return render(request,"comunidades.html")
+
+
 def solcitud_login(request):
     """
     Aca se manejan las solicitudes de login 
@@ -275,7 +291,8 @@ def consulta_datos():
         entregado=1
       else:
         entregado=0
-      cada_dato={"nombre":item.nombre ,"responsable": item.responsable,"meta":item.meta,
+      cada_dato={ "id": item.id,"nombre":item.nombre ,"responsable": item.responsable,"meta":item.cantidad_packs,
+                    "telefono_responsable":item.telefono_responsable,"observacion":item.observacion,
                     "ubicacion": {"latitud": item.latitud,
                                     "longitud": item.longitud
                                   },
