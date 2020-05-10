@@ -1,150 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Natanapp</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-		<link rel="stylesheet" href="/static/css/cargar-donacion.css">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Natanapp</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	<link rel="stylesheet" href="/static/css/cargar-donacion.css">
 
-		{% comment %} css del leaflet {% endcomment %}
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-				integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-				crossorigin="" />
-		<!-- agregamos la hamburguesa -->
-		<link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
-		<script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-		<script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
+	{% comment %} css del leaflet {% endcomment %}
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+		crossorigin="" />
+	<!-- agregamos la hamburguesa -->
+	<link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+	<script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<script src="https://cdn.jsdelivr.net/npm/@material/drawer@5.1.0/dist/mdc.drawer.min.js"></script>
 
-		<style>
-				#mapid {
-						height: 480px;
-						width: 800px;
-				}
-		</style>
-	</head>
-    {% block content %}
-
-    {% include 'layouts/slide-bar.html' %}
-    
-    {% endblock %}
-    <main class="main-content" style="overflow-x: hidden;" id="main-content">
-			<div class="mdc-top-app-bar--fixed-adjust">
-				<!-- App Content -->
-				<h1>Natan </h1>
-				<div>
-						<h2> Mapa de las Comunidades anotadas </h2>
-				</div>
-				<div>
-						<h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
-				</div>
-				<div>
-				
-					<form method="POST" id="formulario"  onchange="consulta()">
-						{% csrf_token %}
-					<label for="lname">Orden de las Comunidades:</label><br>
-					<select id="select_comunidad" class="form-control w-75" name="listo">
-						{% for item in geo %}
-						<option value="{{item.id}}" id="{{item.id}}" latitud="{{item.ubicacion.latitud}}" longitud="{{item.ubicacion.longitud}}">{{item.nombre}}</option>
-						{% endfor %}
-					</select><br>
-					    
-					<!-- <input type="submit" value="Subir"> -->
-				</form>
-				</div>
-				 
-				<div id="mapid"></div>
-			</div>
-		</main>
-
-	{% comment %} javascript del leaflet {% endcomment %}
-	<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"	integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="	crossorigin=""></script>
-
-	<script>
-		{% autoescape off %}
-		datos = {{ geo }}
-		{% endautoescape %}
-
-		console.log(datos)
-		var mymap = L.map('mapid').setView([-25.29807590273343, -57.59930298053507], 10);
-
-		L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Rxa6eCNYkQOw43Wn9BFH', {
-				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-				maxZoom: 18,
-				id: 'mapbox/streets-v11',
-				tileSize: 512,
-				zoomOffset: -1,
-				accessToken: 'your.mapbox.access.token',
-				crossOrigin: true
-		}).addTo(mymap);
-
-		var plano = new Array();
-		var index = 0; //para recorrer la lista
-		var lista_aux = new Array();
-		for (index = 0; index < datos.length; index++) {
-				lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' +datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
-				plano.push(lista_aux);// agregamos al array
+	<style>
+		#mapid {
+			height: 480px;
+			width: 800px;
 		}
+	</style>
+</head>
+{% block content %}
 
-		for (var i = 0; i < plano.length; i++) {
-			marker = new L.marker([plano[i][1], plano[i][2]])
-				.bindPopup(plano[i][0])
-				.addTo(mymap);
-			if (plano[i][3]) // si es verdadero es por que se entrego
-				{
-					var circle = L.circle([plano[i][1], plano[i][2]], {
-						color: 'green',
-						fillColor: '#00ff00',
-						fillOpacity: 0.5,
-						radius: 3500
-					}).addTo(mymap);
-				} else {
-					var circle = L.circle([plano[i][1], plano[i][2]], {
-						color: 'red',
-						fillColor: '#f03',
-						fillOpacity: 0.5,
-						radius: 3500
-					}).addTo(mymap);
-				}
-		}
-		function check() {
-			var com=document.getElementById("select_comunidad").value 
-			return com 
-		}
-		function consulta()
+{% include 'layouts/slide-bar.html' %}
+
+{% endblock %}
+<main class="main-content" style="overflow-x: hidden;" id="main-content">
+	<div class="mdc-top-app-bar--fixed-adjust">
+		<!-- App Content -->
+		<h1>Natan </h1>
+		<div>
+			<h2> Mapa de las Comunidades anotadas </h2>
+		</div>
+		<div>
+			<h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
+		</div>
+		<div>
+
+			<form method="POST" id="formulario" onchange="consulta()">
+				{% csrf_token %}
+				<label for="lname">Orden de las Comunidades:</label><br>
+				<select id="select_comunidad" class="form-control w-75" name="listo">
+					{% for item in geo %}
+					<option value="{{item.id}}" id="{{item.id}}" latitud="{{item.ubicacion.latitud}}"
+						longitud="{{item.ubicacion.longitud}}">{{item.orden}}-{{item.nombre}}</option>
+					{% endfor %}
+				</select><br>
+
+				<!-- <input type="submit" value="Subir"> -->
+			</form>
+		</div>
+
+		<div id="mapid"></div>
+	</div>
+</main>
+
+{% comment %} javascript del leaflet {% endcomment %}
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+	integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+	crossorigin=""></script>
+
+<script>
+	{% autoescape off %}
+	datos = {{ geo }}
+	{% endautoescape %}
+	var com = document.getElementById("select_comunidad").value
+	var option = document.getElementById(com.toString())
+
+	
+	console.log(datos)
+	var mymap = L.map('mapid').setView([-25.29807590273343, -57.59930298053507], 10);
+	L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Rxa6eCNYkQOw43Wn9BFH', {
+		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		maxZoom: 18,
+		id: 'mapbox/streets-v11',
+		tileSize: 512,
+		zoomOffset: -1,
+		accessToken: 'your.mapbox.access.token',
+		crossOrigin: true
+	}).addTo(mymap);
+
+	var plano = new Array();
+	var index = 0; //para recorrer la lista
+	var lista_aux = new Array();
+	for (index = 0; index < datos.length; index++) {
+		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+		plano.push(lista_aux);// agregamos al array
+	}
+
+	for (var i = 0; i < plano.length; i++) {
+		marker = new L.marker([plano[i][1], plano[i][2]])
+			.bindPopup(plano[i][0])
+			.addTo(mymap);
+		if (plano[i][3]) // si es verdadero es por que se entrego
 		{
-			
-			//var encontrar= plano.find(check)
-			//console.log(encontrar)
-			var com=document.getElementById("select_comunidad").value 
-			var option=document.getElementById(com.toString())
-
-			var latitud= option.getAttribute("latitud")
-			var longitud=option.getAttribute("longitud")
-			console.log("dfa: "+ option)
-			encontrar=plano[com]
-			
-			console.log("encontrar: "+ encontrar)
-			//var latitud=encontrar.latitud
-			//var longitud=encontrar.longitud
-			console.log(" latitud"+latitud)
-			console.log("longitud"+ longitud)
-			mymap.setView([latitud,longitud],12)
+			var circle = L.circle([plano[i][1], plano[i][2]], {
+				color: 'green',
+				fillColor: '#00ff00',
+				fillOpacity: 0.5,
+				radius: 3500
+			}).addTo(mymap);
+		} else {
+			var circle = L.circle([plano[i][1], plano[i][2]], {
+				color: 'red',
+				fillColor: '#f03',
+				fillOpacity: 0.5,
+				radius: 3500
+			}).addTo(mymap);
 		}
+	}
+
+
+	var latitud = option.getAttribute("latitud")
+	var longitud = option.getAttribute("longitud")
+	mymap.setView([latitud, longitud], 12)
+	//end of main js 
+	function check() {
+		var com = document.getElementById("select_comunidad").value
+		return com
+	}
+	function consulta() {
+
+		var com = document.getElementById("select_comunidad").value
+		var option = document.getElementById(com.toString())
+
+		var latitud = option.getAttribute("latitud")
+		var longitud = option.getAttribute("longitud")
+		mymap.setView([latitud, longitud], 12)
+	}
 
 
 
 
-		const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
-		const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
-		topAppBar.setScrollTarget(document.getElementById('main-content'));
-		topAppBar.listen('MDCTopAppBar:nav', () => {
-				drawer.open = !drawer.open;
-		});
-	</script>
+	const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+	const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.getElementById('app-bar'));
+	topAppBar.setScrollTarget(document.getElementById('main-content'));
+	topAppBar.listen('MDCTopAppBar:nav', () => {
+		drawer.open = !drawer.open;
+	});
+</script>
 </body>
 
 </html>

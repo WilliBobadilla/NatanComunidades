@@ -250,7 +250,22 @@ def comunidades(request):
     data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
     return render(request,'comunidades.html',data)
 
-
+@csrf_exempt 
+def actualizar_orden(request):
+  """
+  Actualiza el orden de las comunidades(para saber el orden de entrega)
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
+  if request.method=='POST':
+    lista= request.POST.getlist('listaCom[]')
+    print(lista)
+    for a in lista: #recorremos la lista para cambiar el orden 
+       datos=Comunidad.objects.filter(nombre=a ).update(orden=lista.index(a)+1)
+    data={"mensaje": "post recibido"}
+  else:
+    data={"mensaje": "No enviaste un post "}
+  return JsonResponse(data)
 
 
 
@@ -284,7 +299,7 @@ def consulta_datos():
   Funcion que devuelve toda la info de las comundidades\n
   Devuelve en formato diccionario
   """
-  datos_comunidades=Comunidad.objects.all()
+  datos_comunidades=Comunidad.objects.all().order_by('orden')
   lista=[ ]
   for item in datos_comunidades:
       if item.entregado:
