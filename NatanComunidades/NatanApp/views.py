@@ -237,7 +237,7 @@ def comunidades(request):
   if request.method=='POST':
     datos=request.POST 
     cant_comunidades=len(Comunidad.objects.all())
-    orden=cant_comunidades
+    orden=cant_comunidades +1 # a medida que se agregan van al ultimo
     datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
     datos_comunidades.save()
     lista=consulta_datos()
@@ -291,7 +291,7 @@ def consulta_datos():
         entregado=1
       else:
         entregado=0
-      cada_dato={ "id": item.id,"nombre":item.nombre ,"responsable": item.responsable,"meta":item.cantidad_packs,
+      cada_dato={ "id": item.id,"orden":item.orden,"nombre":item.nombre ,"responsable": item.responsable,"meta":item.cantidad_packs,
                     "telefono_responsable":item.telefono_responsable,"observacion":item.observacion,
                     "ubicacion": {"latitud": item.latitud,
                                     "longitud": item.longitud

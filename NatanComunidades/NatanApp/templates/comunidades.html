@@ -126,23 +126,14 @@
 
 
                 <ol id="simple-list">
-                    <li></i>bread</li>
-                    <hr>
-                    <li></i>vegetables</li>
-                    <hr>
-                    <li></i>meat</li>
-                    <hr>
-                    <li></i>milk</li>
-                    <hr>
-                    <li></i>butter</li>
-                    <hr>
-                    <li></i>ice cream</li>
-                    <hr>
+                   {% for item in geo %}
+                   
+                   <li>   </i> {{item.nombre }}</li>
+                    <hr>  
+                
+                    {% endfor %}
                 </ol>
                 <br />
-
-
-
             </form>
         </div>
     </div>
