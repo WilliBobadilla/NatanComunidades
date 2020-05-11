@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login
 
 from NatanComunidades.NatanApp.models import *
 
+from django.contrib.auth.models import User, Group
 # Create your views here.
 
 
@@ -69,10 +70,16 @@ def cargardb(request):
 def home(request):
   if not request.user.is_authenticated: 
     return render(request,"prueba_login.html")
-  #Trata de cargar de forma predeterminada 
-  imagen = UploadImageForm()
-  articulos = Articulo.objects.all()
-  return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
+  #Trata de cargar de forma predeterminada
+  if request.user.groups.filter(name='registrador').exists() or request.user.groups.filter(name='superusuario').exists():
+    imagen = UploadImageForm()
+    articulos = Articulo.objects.all()
+    return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
+  elif request.user.groups.filter(name='administrador').exists(): 
+    return redirect("/mapa")
+  else:  #solo sobra el distribuidor 
+    return redirect("/mapa_distribucion")
+
 
 
 #todos los usuarios pueden acceder a esta lista 
@@ -114,26 +121,29 @@ def ver_donaciones(request):
 def cargar(request):
   if not request.user.is_authenticated:
         return render(request,'prueba_login.html')
-  donante = request.POST.get('donante')
-  donacion = Donacion()
-  donacion.donante=donante
-  imagen = UploadImageForm(request.POST, request.FILES)
-  if imagen.is_valid():
-    donacion.imagen=imagen.cleaned_data['imagen']
-    donacion.save()
+  if request.user.groups.filter(name='registrador').exists() or request.user.groups.filter(name='superusuario').exists():
+    donante = request.POST.get('donante')
+    donacion = Donacion()
+    donacion.donante=donante
+    imagen = UploadImageForm(request.POST, request.FILES)
+    if imagen.is_valid():
+      donacion.imagen=imagen.cleaned_data['imagen']
+      donacion.save()
 
-  global lista_articulos #usado para almacenar lo que viene por ajax
-  global lista_cantidades # cuidar el uso de variables globales
-  # vemos la donacion por articulo
-  for item in range(len(lista_articulos)):
-    articuloID = lista_articulos[item] 
-    articulo = Articulo.objects.get(id=articuloID)
-    cantidad= lista_cantidades[item]
-    donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
-    donacionxarticulo.save()
-  #vaciamos la varible global antes de cargar otro donante
-  lista_articulos=[]
-  lista_articulos=[]
+    global lista_articulos #usado para almacenar lo que viene por ajax
+    global lista_cantidades # cuidar el uso de variables globales
+    # vemos la donacion por articulo
+    for item in range(len(lista_articulos)):
+      articuloID = lista_articulos[item] 
+      articulo = Articulo.objects.get(id=articuloID)
+      cantidad= lista_cantidades[item]
+      donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
+      donacionxarticulo.save()
+    #vaciamos la varible global antes de cargar otro donante
+    lista_articulos=[]
+    lista_articulos=[]
+  else: 
+    return redirect('/') # no carga nada 
   return redirect('/')
 
 @csrf_exempt 
@@ -175,21 +185,24 @@ def comunidades(request):
   """
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
-  if request.method=='POST':
-    datos=request.POST 
-    cant_comunidades=len(Comunidad.objects.all())
-    orden=cant_comunidades +1 # a medida que se agregan van al ultimo
-    datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
-    datos_comunidades.save()
-    lista=consulta_datos()
-    cant_comunidades=len(Comunidad.objects.all())
-    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
-    return render(request,'comunidades.html',data)
-  else:
-    lista=consulta_datos()
-    cant_comunidades=len(Comunidad.objects.all())
-    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
-    return render(request,'comunidades.html',data)
+  if request.user.groups.filter(name='administrador').exists() or request.user.groups.filter(name='superusuario').exists():
+    if request.method=='POST':
+      datos=request.POST 
+      cant_comunidades=len(Comunidad.objects.all())
+      orden=cant_comunidades +1 # a medida que se agregan van al ultimo
+      datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
+      datos_comunidades.save()
+      lista=consulta_datos()
+      cant_comunidades=len(Comunidad.objects.all())
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+      return render(request,'comunidades.html',data)
+    else:
+      lista=consulta_datos()
+      cant_comunidades=len(Comunidad.objects.all())
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+      return render(request,'comunidades.html',data)
+  else: # no es administrador o superuser, no puede ver esto
+      return redirect('/')
 
 @csrf_exempt 
 def actualizar_orden(request):
@@ -198,15 +211,18 @@ def actualizar_orden(request):
   """
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
-  if request.method=='POST':
-    lista= request.POST.getlist('listaCom[]')
-    print(lista)
-    for a in lista: #recorremos la lista para cambiar el orden 
-       datos=Comunidad.objects.filter(nombre=a ).update(orden=lista.index(a)+1)
-    data={"mensaje": "post recibido"}
+  if request.user.groups.filter(name='administrador').exists() or request.user.groups.filter(name='superusuario').exists():
+    if request.method=='POST':
+      lista= request.POST.getlist('listaCom[]')
+      print(lista)
+      for a in lista: #recorremos la lista para cambiar el orden 
+        datos=Comunidad.objects.filter(nombre=a ).update(orden=lista.index(a)+1)
+      data={"mensaje": "post recibido"}
+    else:
+      data={"mensaje": "No enviaste un post "}
+    return JsonResponse(data)
   else:
-    data={"mensaje": "No enviaste un post "}
-  return JsonResponse(data)
+    return redirect('/')
 #-------------------------FIN ADMINISTRACION-------------------------------
 
 
@@ -221,12 +237,13 @@ def mapa_distribucion(request):
   """
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
-
-  lista=consulta_datos()
-  cant_comunidades=len(Comunidad.objects.all())
-  data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
-  return render(request,'map_distribucion.html',data)
-
+  if request.user.groups.filter(name='distribuidor').exists() or request.user.groups.filter(name='superusuario').exists():
+    lista=consulta_datos()
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+    return render(request,'map_distribucion.html',data)
+  else: 
+    return redirect('/')
 #-----------------------FIN DISTRIBUCION--------------------------------
 
 #No usado actualmente
@@ -270,17 +287,24 @@ def mapa_cargar(request):
 
 
 def register_user(request):
-
+  if not request.user.is_authenticated:
+    return render(request,'prueba_login.html')
+  if request.user.groups.filter(name='superusuario').exists():
     msg     = None
     success = False
-
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
-            form.save()
+            user=form.save()
             username = form.cleaned_data.get("username")
+            user.first_name=username #primer nombre 
             raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
+            rol= form.cleaned_data.get('Roles')
+            group = Group.objects.get(name=rol)
+            user.groups.add(group)
+            user.save()
+            
+            #user = authenticate(username=username, password=raw_password)
 
             msg     = 'Usuario creado. Inicie sesión con sus datos.'
             success = True   
@@ -291,12 +315,9 @@ def register_user(request):
         form = SignUpForm()
 
     return render(request, "register.html", {"form": form, "msg" : msg, "success" : success })
-
-
-
-
-
-
+  else: 
+    return redirect('/')
+    
 
 
 
