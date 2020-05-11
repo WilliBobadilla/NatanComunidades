@@ -144,8 +144,8 @@ STATIC_ROOT  =   os.path.join(BASE_DIR, 'static') # esto es par el deploy en her
 STATIC_URL = '/static/'
 LOGIN_URL = '/home'
 LOGIN_REDIRECT_URL = "/home"   # Route defined in app/urls.py
-LOGOUT_REDIRECT_URL = "/home"  # Route defined in app/urls.py
-LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = "/"  # Route defined in app/urls.py
+
 
 
 MEDIA_URL = '/media/'

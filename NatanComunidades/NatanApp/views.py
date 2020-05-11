@@ -75,34 +75,7 @@ def home(request):
   return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
 
 
-# Pedidos
-
-def cargar(request):
-  if not request.user.is_authenticated:
-        return render(request,'prueba_login.html')
-  donante = request.POST.get('donante')
-  donacion = Donacion()
-  donacion.donante=donante
-  imagen = UploadImageForm(request.POST, request.FILES)
-  if imagen.is_valid():
-    donacion.imagen=imagen.cleaned_data['imagen']
-    donacion.save()
-
-  global lista_articulos #usado para almacenar lo que viene por ajax
-  global lista_cantidades # cuidar el uso de variables globales
-  # vemos la donacion por articulo
-  for item in range(len(lista_articulos)):
-    articuloID = lista_articulos[item] 
-    articulo = Articulo.objects.get(id=articuloID)
-    cantidad= lista_cantidades[item]
-    donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
-    donacionxarticulo.save()
-  #vaciamos la varible global antes de cargar otro donante
-  lista_articulos=[]
-  lista_articulos=[]
-  return redirect('/')
-
-
+#todos los usuarios pueden acceder a esta lista 
 def ver_donaciones(request):
   if not request.user.is_authenticated:
     return render(request,'prueba_login.html')
@@ -131,6 +104,38 @@ def ver_donaciones(request):
 
 
 
+
+
+
+## -------------------------- RECEPCION-------------------------------------------------
+
+# Pedidos
+
+def cargar(request):
+  if not request.user.is_authenticated:
+        return render(request,'prueba_login.html')
+  donante = request.POST.get('donante')
+  donacion = Donacion()
+  donacion.donante=donante
+  imagen = UploadImageForm(request.POST, request.FILES)
+  if imagen.is_valid():
+    donacion.imagen=imagen.cleaned_data['imagen']
+    donacion.save()
+
+  global lista_articulos #usado para almacenar lo que viene por ajax
+  global lista_cantidades # cuidar el uso de variables globales
+  # vemos la donacion por articulo
+  for item in range(len(lista_articulos)):
+    articuloID = lista_articulos[item] 
+    articulo = Articulo.objects.get(id=articuloID)
+    cantidad= lista_cantidades[item]
+    donacionxarticulo = Donacionxarticulo(donacion=donacion, articulo=articulo, cantidad=cantidad)
+    donacionxarticulo.save()
+  #vaciamos la varible global antes de cargar otro donante
+  lista_articulos=[]
+  lista_articulos=[]
+  return redirect('/')
+
 @csrf_exempt 
 def cargar_lista_articulos(request):
   """
@@ -152,17 +157,79 @@ def cargar_lista_articulos(request):
   return JsonResponse({"mensaje":"Agregado"})
 
 
+
+
+# ----------------------------ADMINISTRACION------------------------------------------
+# este solo pueden ver los Administradores
 def mapa(request):
-  if request.user.is_staff:
-    print("soy staff y que ")
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
   lista=consulta_datos()
   cant_comunidades=len(Comunidad.objects.all())
   data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
   return render (request,'map.html',data)
+def comunidades(request):
+  """
+  Vista en donde se puede cargar las comunidades \n
+  que van a recibir las donaciones
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
+  if request.method=='POST':
+    datos=request.POST 
+    cant_comunidades=len(Comunidad.objects.all())
+    orden=cant_comunidades +1 # a medida que se agregan van al ultimo
+    datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
+    datos_comunidades.save()
+    lista=consulta_datos()
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+    return render(request,'comunidades.html',data)
+  else:
+    lista=consulta_datos()
+    cant_comunidades=len(Comunidad.objects.all())
+    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+    return render(request,'comunidades.html',data)
+
+@csrf_exempt 
+def actualizar_orden(request):
+  """
+  Actualiza el orden de las comunidades(para saber el orden de entrega)
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
+  if request.method=='POST':
+    lista= request.POST.getlist('listaCom[]')
+    print(lista)
+    for a in lista: #recorremos la lista para cambiar el orden 
+       datos=Comunidad.objects.filter(nombre=a ).update(orden=lista.index(a)+1)
+    data={"mensaje": "post recibido"}
+  else:
+    data={"mensaje": "No enviaste un post "}
+  return JsonResponse(data)
+#-------------------------FIN ADMINISTRACION-------------------------------
 
 
+
+## -----------------------------DISTRIBUCION-------------------------------
+
+#vista distribucion
+def mapa_distribucion(request):
+  """
+  Vista en donde se administra ya la ultima etapa de la campanha,\n
+  la distribucion de los kits.
+  """
+  if not request.user.is_authenticated:
+      return render(request,'prueba_login.html')
+
+  lista=consulta_datos()
+  cant_comunidades=len(Comunidad.objects.all())
+  data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+  return render(request,'map_distribucion.html',data)
+
+#-----------------------FIN DISTRIBUCION--------------------------------
+
+#No usado actualmente
 def mapa_cargar(request):
   """
   vista que se maneja para cargar datos de las \n
@@ -227,45 +294,10 @@ def register_user(request):
 
 
 
-def comunidades(request):
-  """
-  Vista en donde se puede cargar las comunidades \n
-  que van a recibir las donaciones
-  """
-  if not request.user.is_authenticated:
-      return render(request,'prueba_login.html')
-  if request.method=='POST':
-    datos=request.POST 
-    cant_comunidades=len(Comunidad.objects.all())
-    orden=cant_comunidades +1 # a medida que se agregan van al ultimo
-    datos_comunidades=Comunidad(nombre=datos.get('nombre'),responsable=datos.get('responsable'),latitud=float(datos.get('latitud')),longitud=float(datos.get('longitud')),cantidad_packs=datos.get('cantidad_packs'),entregado=False,listo=False,telefono_responsable=datos.get('numero_telefono'),observacion=datos.get('observacion'),orden=orden )
-    datos_comunidades.save()
-    lista=consulta_datos()
-    cant_comunidades=len(Comunidad.objects.all())
-    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
-    return render(request,'comunidades.html',data)
-  else:
-    lista=consulta_datos()
-    cant_comunidades=len(Comunidad.objects.all())
-    data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
-    return render(request,'comunidades.html',data)
 
-@csrf_exempt 
-def actualizar_orden(request):
-  """
-  Actualiza el orden de las comunidades(para saber el orden de entrega)
-  """
-  if not request.user.is_authenticated:
-      return render(request,'prueba_login.html')
-  if request.method=='POST':
-    lista= request.POST.getlist('listaCom[]')
-    print(lista)
-    for a in lista: #recorremos la lista para cambiar el orden 
-       datos=Comunidad.objects.filter(nombre=a ).update(orden=lista.index(a)+1)
-    data={"mensaje": "post recibido"}
-  else:
-    data={"mensaje": "No enviaste un post "}
-  return JsonResponse(data)
+
+
+
 
 
 
@@ -288,7 +320,9 @@ def logout(request):
     do_logout(request)
     # Redireccionamos a la portada
     return redirect('/')
-    
+
+
+
 def logout_request(request):
     logout(request)
     # Redirect to a success page.

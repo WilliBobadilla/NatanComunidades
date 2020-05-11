@@ -38,7 +38,9 @@ urlpatterns = [
     path('donaciones', ver_donaciones),
     path('mapa_cargar',mapa_cargar),
     path('comunidades',comunidades),
-    path('actualizar_orden',actualizar_orden )
+    path('actualizar_orden',actualizar_orden ),
+    path('register',register_user),
+    path('mapa_distribucion',mapa_distribucion)
 ]
 
 if settings.DEBUG: # new
