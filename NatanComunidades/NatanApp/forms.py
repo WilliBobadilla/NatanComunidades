@@ -32,9 +32,28 @@ class SignUpForm(UserCreationForm):
             }
         ))
 
+# codigo para las opciones de los roles
+
+    OPTIONS_CHOICES= [
+    ('registrador', 'Registrador'),
+    ('administrador','Administrador'),
+    ('distribuidor','Distribuidor'),
+    ]
+
+    Roles = forms.CharField(
+        widget=forms.Select(         
+            attrs={                
+                "class": "form-control"
+            },
+            choices=OPTIONS_CHOICES,
+        ))
+
+
+
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2','Roles')
+        
 from .models import Donacion
 
 
