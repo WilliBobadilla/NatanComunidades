@@ -70,7 +70,8 @@ def cargardb(request):
 def home(request):
   if not request.user.is_authenticated: 
     return render(request,"prueba_login.html")
-  #Trata de cargar de forma predeterminada
+  #Trata de cargar de forma predeterminad
+
   if request.user.groups.filter(name='registrador').exists() or request.user.groups.filter(name='superusuario').exists():
     imagen = UploadImageForm()
     articulos = Articulo.objects.all()
@@ -80,7 +81,35 @@ def home(request):
   else:  #solo sobra el distribuidor 
     return redirect("/mapa_distribucion")
 
+def crear_roles(request):
+  """
+  vista para crear roles, solos los superuser hacen esto 
+  """
+  if not request.user.is_authenticated:
+    return render(request,'prueba_login.html')
+  if request.user.is_superuser:
+    superusuario, created_superuser = Group.objects.get_or_create(name='superusuario')
+    registrador, created_registrador = Group.objects.get_or_create(name='registrador')
+    administrador, created_administrador = Group.objects.get_or_create(name='administrador')
+    distribuidor,created_distribuidor = Group.objects.get_or_create(name='distribuidor')
+    if created_superuser==True:#aca agregar el tema de los permisos y demas 
+      print("superusuario creado,registrador creado, administrdor creado, distribuidor creado")
+      rol=True
+    else:
+      rol=False
+    print(rol)
+    if rol==True: # la variable rol se trae de models.py 
+      print("Creacion de roles en proceso, con respectivos permisos")
+      print(permisos(superusuario,registrador,administrador,distribuidor))
+      #aca empezamos a darle permisos a cada uno de los grupos 
 
+      return redirect('/')
+    else: 
+      print("ya estan todos creados ")
+      return redirect('/')
+  else:
+    print("No sos superuser")
+    return redirect("/")
 
 #todos los usuarios pueden acceder a esta lista 
 def ver_donaciones(request):
@@ -110,6 +139,34 @@ def ver_donaciones(request):
   return render(request, 'ver_donaciones.html', {'resultado': resultado})
 
 
+def permisos(superusuario,registrador,administrador,distribuidor):
+  """
+  nombre_rol pueden ser: superusuario, registrador,administrador,distribuidor
+  """
+
+  #superuser 
+  permisos_lista=Permission.objects.all()# sacamos todos los permisos 
+  superusuario.permissions.set(permisos_lista)
+  #registradores
+  lista_modelos=['donacion','donacionxarticulo','medida','articulo' ]
+  lista_permisos_registradores=[] # aca se almacenan todos los permisos
+  for item in lista_modelos:
+    permisos_registradores= Permission.objects.filter(content_type__app_label='NatanApp', content_type__model=item)
+    for permiso in permisos_registradores:
+      lista_permisos_registradores.append(permiso)
+  registrador.permissions.set(lista_permisos_registradores) 
+  #administradores
+  permisos_administradores=Permission.objects.filter(content_type__app_label='NatanApp', content_type__model='comunidad')
+  administrador.permissions.set(permisos_administradores)
+
+  #distribuidores , only view and change
+  permisos_distribuidores= Permission.objects.filter(content_type__app_label='NatanApp', content_type__model='comunidad')
+  lista_distribuidores= [  permisos_distribuidores[1] , permisos_distribuidores[3] ]
+  distribuidor.permissions.set(lista_distribuidores)
+  print("creacion de grupos terminado ")
+  return "Terminado"
+    
+        
 
 
 

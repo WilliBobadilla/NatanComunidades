@@ -40,7 +40,8 @@ urlpatterns = [
     path('comunidades',comunidades),
     path('actualizar_orden',actualizar_orden ),
     path('register',register_user),
-    path('mapa_distribucion',mapa_distribucion)
+    path('mapa_distribucion',mapa_distribucion),
+    path('crear_roles',crear_roles)
 ]
 
 if settings.DEBUG: # new

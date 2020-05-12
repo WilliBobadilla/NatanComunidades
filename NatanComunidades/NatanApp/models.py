@@ -1,6 +1,31 @@
 from django.db import models
 from django.utils import timezone
 
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
+#creamos el grupo si es que no existe en django y dar permisos 
+#g1 = Group.objects.create(name='pruebanomas')
+#tenemos tres tipos de usuarios, con sus respectivos permisos 
+"""
+superusuario:    puede hacer de todo
+registrador:   
+            APP                   Tabla             permisos
+             NatanApp --------  articulo  -------- add,change,delete,view
+             NatanApp --------  donacion  -------- add,change,delete,view
+             NatanApp --------  donacionxarticulo  -------- add,change,delete,view
+             NatanApp --------  medida  -------- add,change,delete,view
+
+Administrador: 
+            APP                   Tabla             permisos
+             NatanApp --------  Comunidad  -------- add,change,delete,view
+Distribuidor: 
+            APP                   Tabla             permisos
+             NatanApp --------  Comunidad --------  change,view               
+"""
+
+
+
+
 # Create your models here.
 class Medida(models.Model):
   simbolo = models.CharField(max_length=45, unique=True)
@@ -44,3 +69,7 @@ class Comunidad(models.Model):
   entregado = models.BooleanField() # para saber si se entrego o no 
   listo = models.BooleanField() #para saber si ya esta para entregarse 
   observacion= models.TextField(default=" ",max_length=500)
+
+
+if __name__ == "__main__":
+    pass
