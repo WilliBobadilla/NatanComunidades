@@ -10,6 +10,15 @@ class SignUpForm(UserCreationForm):
                 "class": "form-control"
             }
         ))
+
+    apellido = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                "placeholder" : "Ingrese su apellido",                
+                "class": "form-control"
+            }
+        ))
+
     email = forms.EmailField(
         widget=forms.EmailInput(
             attrs={
@@ -52,7 +61,7 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2','Roles')
+        fields = ('username','apellido', 'email', 'password1', 'password2','Roles')
         
 from .models import Donacion
 
