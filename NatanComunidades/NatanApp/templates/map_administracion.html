@@ -23,7 +23,7 @@
 	<style>
 		#mapid {
 			height: 480px;
-			width: 800px;
+			width: 100%;
 		}
 	</style>
 </head>
@@ -35,13 +35,13 @@
 <main class="main-content" style="overflow-x: hidden;" id="main-content">
 	<div class="mdc-top-app-bar--fixed-adjust">
 		<!-- App Content -->
-		<h1>Natan </h1>
+		<h3>Natan </h3>
 		<div>
-            <h2> Mapa de las Comunidades anotadas (distribucion) </h2>
-             <h4>{{user.groups.all.0}}</h4>
+			<h4> Mapa de las Comunidades anotadas</h4>
+
 		</div>
 		<div>
-			<h4>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h4>
+			<h5>Cantidad de Comunidades registradas: {{cantidad_comunidades}}</h5>
 		</div>
 		<div>
 
@@ -75,7 +75,7 @@
 	var com = document.getElementById("select_comunidad").value
 	var option = document.getElementById(com.toString())
 
-	
+
 	console.log(datos)
 	var mymap = L.map('mapid').setView([-25.29807590273343, -57.59930298053507], 10);
 	L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=Rxa6eCNYkQOw43Wn9BFH', {
@@ -92,7 +92,7 @@
 	var index = 0; //para recorrer la lista
 	var lista_aux = new Array();
 	for (index = 0; index < datos.length; index++) {
-		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado];
+		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado, datos[index].listo];
 		plano.push(lista_aux);// agregamos al array
 	}
 
@@ -100,7 +100,8 @@
 		marker = new L.marker([plano[i][1], plano[i][2]])
 			.bindPopup(plano[i][0])
 			.addTo(mymap);
-		if (plano[i][3]) // si es verdadero es por que se entrego
+		// indice 3 entrefado, indice 4 listo
+		if (plano[i][3] && plano[i][4]) // si ambos son verdadero es por que se entrego y listo, verde
 		{
 			var circle = L.circle([plano[i][1], plano[i][2]], {
 				color: 'green',
@@ -108,7 +109,16 @@
 				fillOpacity: 0.5,
 				radius: 3500
 			}).addTo(mymap);
-		} else {
+		} else if (!plano[i][3] && plano[i][4]) //listo pero no entregado , amarillo 
+		{
+			var circle = L.circle([plano[i][1], plano[i][2]], {
+				color: 'red',
+				fillColor: '#ffff00',
+				fillOpacity: 0.5,
+				radius: 3500
+			}).addTo(mymap);
+		}
+		else {    // no se entrego ni esta listo, rojo 
 			var circle = L.circle([plano[i][1], plano[i][2]], {
 				color: 'red',
 				fillColor: '#f03',

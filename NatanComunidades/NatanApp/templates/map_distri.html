@@ -9,12 +9,7 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Natanapp</title>
-		
-		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-	</script> -->
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
 	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
 	</script>
@@ -39,7 +34,7 @@ crossorigin="" />
 <style>
 	#mapid {
 		height: 480px;
-		width: 800px;
+		width: 100%;
 	}
 	</style>
 </head>
@@ -88,18 +83,18 @@ crossorigin="" />
 
 							<!-- este formulario se esta enviando a la misma ruta del mapa  -->
 							
-							<form action="/mapa/" method="POST" id="formulario" ></form>
+							<form action="/mapa_distribucion" method="POST" id="formulario" ></form>
 							<div class="form-group">
 								
-								<select class="form-control" name="nombre-comunidad">
+								<select class="form-control" id="nombre-comunidad" name="nombre-comunidad">
 									{% for item in geo %}
 									<option value="{{item.id}}">{{item.orden}}-{{item.nombre}}</option>
 									{% endfor %}
 								</select>
 								
 								<select name="estado" id="estado" class="form-control my-3">
-									<option value="no-entregado">No entregado</option>
-									<option value="listo-noentregado">Listo pero no entregado</option>
+									<option value="no-entregado" selected>No entregado</option>
+									<option value="listo-no-entregado">Listo pero no entregado</option>
 									<option value="entregado">Entregado</option>
 								</select>
 								
@@ -157,7 +152,7 @@ crossorigin=""></script>
 	for (index = 0; index < datos.length; index++) {
 		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable +
 			"</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index]
-			.meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado
+			.meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado,datos[index].listo
 		];
 		plano.push(lista_aux); // agregamos al array
 	}
@@ -166,7 +161,8 @@ crossorigin=""></script>
 		marker = new L.marker([plano[i][1], plano[i][2]])
 			.bindPopup(plano[i][0])
 			.addTo(mymap);
-		if (plano[i][3]) // si es verdadero es por que se entrego
+			// indice 3 entrefado, indice 4 listo
+		if (plano[i][3] && plano[i][4] ) // si ambos son verdadero es por que se entrego y listo, verde
 		{
 			var circle = L.circle([plano[i][1], plano[i][2]], {
 				color: 'green',
@@ -174,7 +170,16 @@ crossorigin=""></script>
 				fillOpacity: 0.5,
 				radius: 3500
 			}).addTo(mymap);
-		} else {
+		} else if(!plano[i][3] && plano[i][4]) //listo pero no entregado , amarillo 
+		    {
+			var circle = L.circle([plano[i][1], plano[i][2]], {
+				color: 'red',
+				fillColor: '#ffff00',
+				fillOpacity: 0.5,
+				radius: 3500
+			}).addTo(mymap);
+		}
+		else{    // no se entrego ni esta listo, rojo 
 			var circle = L.circle([plano[i][1], plano[i][2]], {
 				color: 'red',
 				fillColor: '#f03',
@@ -203,7 +208,6 @@ crossorigin=""></script>
 		var longitud = option.getAttribute("longitud")
 		mymap.setView([latitud, longitud], 12)
 	}
-
 
 
 

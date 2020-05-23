@@ -234,7 +234,7 @@ def mapa(request):
   lista=consulta_datos()
   cant_comunidades=len(Comunidad.objects.all())
   data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
-  return render (request,'map.html',data)
+  return render (request,'map_administracion.html',data)
 def comunidades(request):
   """
   Vista en donde se puede cargar las comunidades \n
@@ -287,6 +287,8 @@ def actualizar_orden(request):
 ## -----------------------------DISTRIBUCION-------------------------------
 
 #vista distribucion
+
+@csrf_exempt 
 def mapa_distribucion(request):
   """
   Vista en donde se administra ya la ultima etapa de la campanha,\n
@@ -295,10 +297,32 @@ def mapa_distribucion(request):
   if not request.user.is_authenticated:
       return render(request,'prueba_login.html')
   if request.user.groups.filter(name='distribuidor').exists() or request.user.groups.filter(name='superusuario').exists():
-    lista=consulta_datos()
-    cant_comunidades=len(Comunidad.objects.all())
-    data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
-    return render(request,'map_distribucion.html',data)
+    if request.method=='POST':
+      id=request.POST.get('iden')
+      estado=request.POST.get('estado') 
+      # dos estados posibles ya que por defecto no esta listo ni entregado (rojo en el mapa)
+      #  listo-no-entregado  (amarillo en el mapa)
+      # entregado            (verde en el mapa )
+      #
+      print(id, "estado", estado)
+      comunidad= Comunidad.objects.get(pk=id)
+      print(comunidad)
+      if estado=='listo-no-entregado':
+        comunidad.listo=True  #ya esta listo 
+      elif estado=='entregado':
+        print('cambiando entregado')
+        comunidad.listo=True 
+        comunidad.entregado=True # ya se entrego 
+      comunidad.save()
+      lista=consulta_datos()
+      cant_comunidades=len(Comunidad.objects.all())
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+      return render(request,'map_distri.html',data)
+    else:
+      lista=consulta_datos()
+      cant_comunidades=len(Comunidad.objects.all())
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+      return render(request,'map_distri.html',data)
   else: 
     return redirect('/')
 #-----------------------FIN DISTRIBUCION--------------------------------
@@ -418,12 +442,17 @@ def consulta_datos():
         entregado=1
       else:
         entregado=0
+      if item.listo:
+        listo=1
+      else:
+        listo=0
       cada_dato={ "id": item.id,"orden":item.orden,"nombre":item.nombre ,"responsable": item.responsable,"meta":item.cantidad_packs,
                     "telefono_responsable":item.telefono_responsable,"observacion":item.observacion,
                     "ubicacion": {"latitud": item.latitud,
                                     "longitud": item.longitud
                                   },
-                           "entregado":entregado
+                           "entregado":entregado,
+                           "listo":listo
                 }
       lista.append(cada_dato) # agregamos a la lista
   return lista 

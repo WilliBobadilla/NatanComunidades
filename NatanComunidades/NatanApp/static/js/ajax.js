@@ -1,6 +1,7 @@
 console.log('entro en el js')
 $(document).ready(function () {
     console.log('entro en el codigo jquery')
+    console.log(document.getElementById('nombre-comunidad').value )
     $("#formulario").bind("submit",function(){
         // se captura el boton de envio
         var btnEnviar = $("#enviar");
@@ -8,7 +9,10 @@ $(document).ready(function () {
         $.ajax({
             type: $(this).attr("method"),
             url: $(this).attr("action"),
-            data:$(this).serialize(),
+            data:{ 
+                iden: document.getElementById('nombre-comunidad').value,
+                estado:document.getElementById('estado').value
+            },
             beforeSend: function(){
                 /*
                 * Esta función se ejecuta durante el envió de la petición al
@@ -26,7 +30,7 @@ $(document).ready(function () {
                 * */
                 btnEnviar.val("Enviado");
                 btnEnviar.removeAttr("disabled");
-                console.log('se realizo la peticion')
+                console.log('se realizo la peticion' + data.message)
             },
             success: function(data){
                 /*
@@ -34,8 +38,9 @@ $(document).ready(function () {
                 * correcta
                 * */
                 // $(".respuesta").html(data);
-                alert("El formulario se envio correctamente");
+                alert("Los datos se actualizaron correctamente ");
                 console.log('se completo la peticion')
+                window.location='/mapa_distribucion'
             },
             error: function(data){
                 /*

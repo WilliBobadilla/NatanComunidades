@@ -43,7 +43,7 @@ class Articulo(models.Model):
 class Donacion(models.Model):
   donante = models.CharField(max_length=150, default='')
   fecha = models.DateField(default=timezone.now())
-  imagen = models.ImageField(upload_to='', null=True)
+  imagen = models.ImageField(upload_to='', null=True,default='noimage.png')
   observaciones = models.TextField(default='', blank=True)
   def __str__(self):
     return self.donante + ' - ' + str(self.fecha)
@@ -70,6 +70,7 @@ class Comunidad(models.Model):
   listo = models.BooleanField() #para saber si ya esta para entregarse 
   observacion= models.TextField(default=" ",max_length=500)
 
-
+  def __str__(self):
+    return self.nombre
 if __name__ == "__main__":
     pass
