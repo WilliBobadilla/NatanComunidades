@@ -75,7 +75,7 @@ def home(request):
   if request.user.groups.filter(name='registrador').exists() or request.user.groups.filter(name='superusuario').exists():
     imagen = UploadImageForm()
     articulos = Articulo.objects.all()
-    return render(request, 'cargar-donacion.html', {'articulos':articulos, 'imagen': imagen})
+    return render(request, 'cargar-donacion.html', {'articulos':articulos, 'title': "Cargar Donación"})
   elif request.user.groups.filter(name='administrador').exists(): 
     return redirect("/mapa")
   else:  #solo sobra el distribuidor 
@@ -119,7 +119,7 @@ def ver_donaciones(request):
     donaciones = Donacionxarticulo.objects.all()
     articulos = Articulo.objects.all()
   except:
-    return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.'})
+    return render(request, 'ver_donaciones.html', {'msg': 'No se encontró ninguna donación.','title':'Donaciones'})
 
   # sendArticulos = []
   # sendCantidades = []
@@ -136,7 +136,7 @@ def ver_donaciones(request):
   # resultado = [sendArticulos, sendCantidades]
   print(resultado)
 
-  return render(request, 'ver_donaciones.html', {'resultado': resultado})
+  return render(request, 'ver_donaciones.html', {'resultado': resultado,'title':'Donaciones'})
 
 
 def permisos(superusuario,registrador,administrador,distribuidor):
@@ -251,12 +251,12 @@ def comunidades(request):
       datos_comunidades.save()
       lista=consulta_datos()
       cant_comunidades=len(Comunidad.objects.all())
-      data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades,'title':'Formulario'} # al final enviamos esto 
       return render(request,'comunidades.html',data)
     else:
       lista=consulta_datos()
       cant_comunidades=len(Comunidad.objects.all())
-      data = {"geo": lista,"cantidad_comunidades":cant_comunidades} # al final enviamos esto 
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades,'title':'Formulario'} # al final enviamos esto 
       return render(request,'comunidades.html',data)
   else: # no es administrador o superuser, no puede ver esto
       return redirect('/')
@@ -316,12 +316,12 @@ def mapa_distribucion(request):
       comunidad.save()
       lista=consulta_datos()
       cant_comunidades=len(Comunidad.objects.all())
-      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Distribucion'} # al final enviamos esto 
       return render(request,'map_distri.html',data)
     else:
       lista=consulta_datos()
       cant_comunidades=len(Comunidad.objects.all())
-      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Comunidades'} # al final enviamos esto 
+      data = {"geo": lista,"cantidad_comunidades":cant_comunidades, 'title': 'Distribucion'} # al final enviamos esto 
       return render(request,'map_distri.html',data)
   else: 
     return redirect('/')
