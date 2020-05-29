@@ -92,7 +92,7 @@
 	var index = 0; //para recorrer la lista
 	var lista_aux = new Array();
 	for (index = 0; index < datos.length; index++) {
-		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4>", datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado, datos[index].listo];
+		lista_aux = ['<h2>Comunidad: ' + datos[index].nombre + '</h2>' + '<h4>Responsable: ' + datos[index].responsable + "</h4>" + '<h5>Teléfono: ' + datos[index].telefono_responsable + '</h5>' + "<h4>Meta: " + datos[index].meta + "</h4> <h5>Descripcion: "+ datos[index].observacion + '</h5>'  , datos[index].ubicacion.latitud, datos[index].ubicacion.longitud, datos[index].entregado, datos[index].listo];
 		plano.push(lista_aux);// agregamos al array
 	}
 
