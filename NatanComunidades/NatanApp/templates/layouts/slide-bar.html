@@ -1,4 +1,5 @@
-
+<link rel="stylesheet" href="/static/css/positionSideBar.css">
+<!-- https://www.webforefront.com/django/permissionchecks.html -->
 <aside class="mdc-drawer mdc-drawer--dismissible">
   <div class="mdc-drawer__content">
 
@@ -7,18 +8,51 @@
                 <i class="material-icons mdc-list-item__graphic" aria-hidden="true">description</i>
                 <span class="mdc-list-item__text" >Donaciones</span>
             </a>
+          <!-- solo los que pueden hacer registros  -->
+
+          {% if user.groups.all.0.name == "registrador" or user.groups.all.0.name == "superusuario" %}
+          <a class="mdc-list-item" href="/">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+            <span class="mdc-list-item__text">Formulario</span>
+        </a>
+
+            {% endif %}
+           <!-- fin registro -->
+           <!-- inicio de los administradores ( no superuser ) -->
+           {% if user.groups.all.0.name == 'administrador' or user.groups.all.0.name == "superusuario"   %}
           <a class="mdc-list-item " href="/mapa" aria-current="page">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
-              <span class="mdc-list-item__text" >Mapa</span>
+              <span class="mdc-list-item__text" >Mapa Administración</span>
           </a>
-           <a class="mdc-list-item" href="/">
-              <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
-              <span class="mdc-list-item__text">Formulario</span>
-          </a>
+          <a class="mdc-list-item" href="/comunidades">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+            <span class="mdc-list-item__text">Formulario comunidades</span>
+        </a>
+        {% endif %}
+          <!-- fin de los administradores  -->
+          <!-- inicio de los distribuidores -->
+          {% if  user.groups.all.0.name == "distribuidor"  or  user.groups.all.0.name == "superusuario"  %}
+          <a class="mdc-list-item " href="/mapa_distribucion" aria-current="page">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
+            <span class="mdc-list-item__text" >Mapa distribución</span>
+        </a>
+        {% endif %}
+         <!-- fin de los distribuidores -->
+            
+        <!-- solo los superuser -->
+        {% if user.groups.all.0.name == "superusuario" %}
+          <a class="mdc-list-item" href="/register">
+            <i class="material-icons mdc-list-item__graphic" aria-hidden="true">assignment</i>
+            <span class="mdc-list-item__text">Registar Usuario</span>
+        </a>
+        {% endif %}
+       <!-- fin de superuser -->
           <a class="mdc-list-item" href="/logout">
               <i class="material-icons mdc-list-item__graphic" aria-hidden="true">meeting_room</i>
               <span class="mdc-list-item__text">Cerrar sesión</span>
           </a>
+           <h5>Hola, {{ request.user.first_name}}</h5>
+           <h5>Rol: {{ user.groups.all.0.name}}</h5>
       </div>
   </div>
 </aside>
@@ -28,7 +62,7 @@
       <div class="mdc-top-app-bar__row">
           <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
               <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-              <span class="mdc-top-app-bar__title">Cargar donación</span>
+              <span class="mdc-top-app-bar__title">{{ title }}</span>
           </section>
       </div>
   </header>

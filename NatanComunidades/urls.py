@@ -31,12 +31,16 @@ urlpatterns = [
     path('cargarlista', cargar_lista_articulos),
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
-    path('logout',logout_request),
     path('logout',logout),
     path('register/', register_user, name="register"),
     # path('cargar_donacion', cargar_donacion),
     path('donaciones', ver_donaciones),
-    path('mapa_cargar',mapa_cargar)
+    path('mapa_cargar',mapa_cargar),
+    path('comunidades',comunidades),
+    path('actualizar_orden',actualizar_orden ),
+    path('register',register_user),
+    path('mapa_distribucion',mapa_distribucion),
+    path('crear_roles',crear_roles)
 ]
 
 if settings.DEBUG: # new
