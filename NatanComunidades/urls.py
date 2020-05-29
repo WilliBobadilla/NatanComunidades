@@ -31,7 +31,6 @@ urlpatterns = [
     path('cargarlista', cargar_lista_articulos),
     path('mapa/', mapa),
     path('solicitud_login',solcitud_login),
-    path('logout',logout_request),
     path('logout',logout),
     path('register/', register_user, name="register"),
     # path('cargar_donacion', cargar_donacion),
