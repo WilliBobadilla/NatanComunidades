@@ -7,9 +7,9 @@ Gestion de Provisiones de kit de alimentos para la poblacion Indigena
 
 <p float="left">
 <img src="./img/1.png"  width="25%" height="35%" />
-Inicio de la aplicacion, form de Login
+Inicio de la aplicacion
 <img src="./img/2.png"  width="25%" height="35%" />
-Podemos ver el Slide-bar y su contenido 
+Podemos ver el Slide-bar
 <img src="./img/3.png"  width="25%" height="35%" />
-Pagina principal donde se puede cargar donaciones 
+Cargar donaciones 
 </p>
